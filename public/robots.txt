@@ -1,0 +1,22 @@
+# robots.txt for Mahaveer Multi-Speciality Hospital
+# Full crawl access — this is a public marketing site.
+
+User-agent: *
+Allow: /
+Disallow: /_/
+
+# Explicit allow for major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /images/
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# Sitemap declaration
+Sitemap: https://mahaveerhospital.com/sitemap.xml

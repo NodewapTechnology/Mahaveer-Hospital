@@ -1,0 +1,9 @@
+/* Mahaveer Hospital — page level resets */
+.App {
+  text-align: left;
+}
+
+/* keep CRA's default classes safe but neutral */
+.App-link {
+  color: hsl(var(--primary));
+}
