@@ -28,6 +28,30 @@
         });
     });
 
+    // Flatpickr — beautiful calendar for date inputs
+    if (typeof flatpickr !== 'undefined') {
+        document.querySelectorAll('input[type="date"]').forEach(el => {
+            flatpickr(el, {
+                dateFormat: 'Y-m-d',
+                altInput: true,
+                altFormat: 'D, d M Y',
+                minDate: 'today',
+                disableMobile: false,
+                monthSelectorType: 'static',
+                animate: true,
+                allowInput: false,
+                onReady: function(_dateObj, _dateStr, instance) {
+                    if (instance.altInput) {
+                        instance.altInput.setAttribute('placeholder', 'Select preferred date');
+                        instance.altInput.setAttribute('data-testid', el.getAttribute('data-testid') + '-visible');
+                        // Copy required styling
+                        instance.altInput.classList.add('flatpickr-alt');
+                    }
+                },
+            });
+        });
+    }
+
     // Reveal on scroll
     const io = new IntersectionObserver((entries) => {
         entries.forEach(e => {

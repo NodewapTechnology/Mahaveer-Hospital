@@ -21,7 +21,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..800,0..100,0..1;1,9..144,300..800,0..100,0..1&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('css/site.css') }}?v=10">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="{{ asset('css/site.css') }}?v=12">
     @if($siteSettings?->favicon)<link rel="icon" href="{{ asset($siteSettings->favicon) }}">@endif
     @stack('head')
 </head>
@@ -46,7 +47,8 @@
         </a>
     @endif
 
-    <script src="{{ asset('js/site.js') }}?v=8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+    <script src="{{ asset('js/site.js') }}?v=10"></script>
     @stack('scripts')
 </body>
 </html>
