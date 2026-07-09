@@ -3,4 +3,5 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 class ContactDetail extends Model {
     protected $guarded = [];
+    protected $casts = ['translations' => 'array'];
 }

@@ -2,23 +2,26 @@
     $siteSettings = $siteSettings ?? \App\Models\WebsiteSetting::first();
     $siteContact = $siteContact ?? \App\Models\ContactDetail::first();
     $siteSocials = $siteSocials ?? \App\Models\SocialLink::where('is_active', true)->orderBy('sort')->get();
+    $currentLang = $currentLang ?? session('lang', 'en');
     $seo = $seo ?? null;
+    $waRaw = $siteContact?->whatsapp_number ?: $siteContact?->phone_primary;
+    $waNumber = $waRaw ? preg_replace('/[^0-9]/', '', $waRaw) : null;
 @endphp
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ $currentLang }}">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $seo?->title ?? ($siteSettings?->site_name . ' — ' . $siteSettings?->tagline) }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+    <meta name="theme-color" content="#3b1f4a">
+    <title>{{ $seo?->title ?? (($siteSettings?->site_name ?? 'Mahaveer Hospital') . ' — ' . ($siteSettings?->tagline ?? '')) }}</title>
     @if($seo?->description)<meta name="description" content="{{ $seo->description }}">@endif
     @if($seo?->keywords)<meta name="keywords" content="{{ $seo->keywords }}">@endif
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('css/site.css') }}?v=3">
+    <link rel="stylesheet" href="{{ asset('css/site.css') }}?v=6">
     @if($siteSettings?->favicon)<link rel="icon" href="{{ asset($siteSettings->favicon) }}">@endif
     @stack('head')
 </head>
@@ -31,12 +34,19 @@
 
     @include('frontend.partials.footer')
 
-    <a href="tel:{{ $siteContact?->emergency_phone ?? '+916287797276' }}" class="floating-emergency" data-testid="floating-emergency-btn" title="24/7 Emergency">
-        <i class="fas fa-phone-flip"></i><span>Emergency</span>
-    </a>
+    @if($waNumber)
+        <a href="https://wa.me/{{ $waNumber }}" target="_blank" rel="noopener" class="floating-wa" title="@t('label.chat_whatsapp')" data-testid="floating-whatsapp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    @endif
+    @if($siteContact?->emergency_phone)
+        <a href="tel:{{ $siteContact->emergency_phone }}" class="floating-em" data-testid="floating-emergency">
+            <i class="fas fa-phone-volume"></i>
+            <span class="lbl">@t('label.emergency')</span>
+        </a>
+    @endif
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('js/site.js') }}?v=3"></script>
+    <script src="{{ asset('js/site.js') }}?v=6"></script>
     @stack('scripts')
 </body>
 </html>

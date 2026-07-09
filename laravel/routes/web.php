@@ -30,6 +30,11 @@ use App\Http\Controllers\Admin\WebsiteSettingController;
 use App\Http\Controllers\Admin\EnquiryController;
 
 // ----------------- Public / Frontend -----------------
+Route::get('/lang/{lang}', function ($lang) {
+    if (in_array($lang, ['en', 'hi'])) session(['lang' => $lang]);
+    return redirect(back()->getTargetUrl() ?: '/');
+})->name('lang.switch');
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/services', [PublicServiceController::class, 'index'])->name('services');
