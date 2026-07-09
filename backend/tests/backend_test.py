@@ -7,7 +7,7 @@ import re
 import pytest
 import requests
 
-BASE_URL = "https://8acd5f59-fc30-4d0b-8df0-e3066c904643.preview.emergentagent.com"
+BASE_URL = "https://doctor-clinic-portal-1.preview.emergentagent.com"
 ADMIN_EMAIL = "admin@mahaveerhospital.com"
 ADMIN_PASS = "Admin@12345"
 
