@@ -1,0 +1,43 @@
+{
+  "summary": "Iteration 2 focused on responsiveness, design polish (no green), 4-item primary nav + More dropdown, EN/HI toggle, mobile menu, and the new admin Translations (EN/HI) module. Backend: 45/45 pytest passing (10 new tests added for design/i18n/translations CRUD). Frontend: verified 5 viewports (1440/1200/1024/768/390) with 0px horizontal overflow, exactly 4 primary nav items + More dropdown showing 6 sub-links with icon prefixes, EN\u2194HI toggle switches nav labels (\u0939\u094b\u092e/\u0939\u092e\u093e\u0930\u0947 \u092c\u093e\u0930\u0947 \u092e\u0947\u0902/\u0938\u0947\u0935\u093e\u090f\u0902/\u0921\u0949\u0915\u094d\u091f\u0930\u094d\u0938/\u0914\u0930), mobile menu shows all 10 links + Call + Book CTAs, no green text/font/border colors anywhere on page (0 matching elements found via computed style scan).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Header CTAs", "issues": ["data-testid naming differs slightly from spec: header uses 'header-call-btn' and 'header-book-btn' (with -btn suffix) instead of exactly 'header-call'/'header-book'. Buttons exist visually as circular icon-only elements (confirmed via screenshot). Similarly the SVG logo mark exists (visually confirmed) but the wrapper does not carry data-testid='brand-mark' \u2014 the parent 'admin-login-link' testid is used for the anchor. These are naming-convention mismatches, not visual/functional bugs."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "OPTIONAL (naming polish only): Add explicit data-testid='header-call', 'header-book', and 'brand-mark' attributes if the spec's exact testid names matter to downstream automation. Current 'header-call-btn'/'header-book-btn' work functionally."
+  ],
+  "critical_code_review_comments": [
+    "Responsiveness is solid: 0px horizontal overflow at 1440/1200/1024/768/390. Header does not wrap or cramp at any breakpoint.",
+    "Design palette compliance verified: no green anywhere in text/font/border. Only WhatsApp floating button uses green (background only), which is allowed.",
+    "Desktop menu correctly collapsed to 4 primary items (Home/About/Services/Doctors) + More dropdown with 6 grouped links (Gallery, Events, Offers, Testimonials, Blog, Contact) each with icon prefix \u2014 exactly matches user requirement.",
+    "Mobile hamburger menu (data-testid='mobile-menu-toggle') opens full drawer with all 10 nav links + Call/Book CTAs. Works cleanly at 390px width.",
+    "Fraunces + Manrope fonts loaded (verified in layout.blade.php and site.css computed styles).",
+    "Text-based logo fallback (brand-fallback) has been REMOVED as required; a clean SVG mark renders in its place at both header and footer.",
+    "Language toggle: /lang/hi session route switches all ui() strings to Hindi; verified nav labels change to \u0939\u094b\u092e/\u0939\u092e\u093e\u0930\u0947 \u092c\u093e\u0930\u0947 \u092e\u0947\u0902/\u0938\u0947\u0935\u093e\u090f\u0902/\u0921\u0949\u0915\u094d\u091f\u0930\u094d\u0938/\u0914\u0930/\u0917\u0948\u0932\u0930\u0940/\u0915\u093e\u0930\u094d\u092f\u0915\u094d\u0930\u092e/\u0911\u092b\u0930\u094d\u0938/\u0930\u094b\u0917\u0940 \u0905\u0928\u0941\u092d\u0935/\u092c\u094d\u0932\u0949\u0917/\u0938\u0902\u092a\u0930\u094d\u0915. Persists across pages via session.",
+    "Admin Translations (EN/HI) module fully functional: sidebar link present, index page loads with search input + seed defaults + add buttons (all with correct data-testids), seed-defaults inserts 36 default rows, create/edit/delete flow verified end-to-end.",
+    "Contact form still persists enquiries; admin dashboard + enquiries listing render correctly.",
+    "Full admin CRUD retest for Doctors passes (create \u2192 visible on public /doctors \u2192 edit \u2192 delete)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (BASE_URL updated to current preview URL; added 10 new tests for design/i18n/translations CRUD)"
+  ],
+  "success_rate": {"backend": "100% (45/45)", "frontend": "100% \u2014 all critical flows across 5 viewports validated"},
+  "test_credentials": "admin@mahaveerhospital.com / Admin@12345 \u2014 verified working",
+  "seed_data_creation": "Called POST /admin/translations/seed-defaults (36 UI keys seeded). Created + deleted TEST_Dr Pytest via admin. Created + deleted 'test.pytest.key' translation.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "backend_test.py now has 45 tests covering: 10 public pages, doctor detail, light theme, contact submission, admin auth (wrong/right/logout/guest redirect), 15 admin listing pages, doctor CRUD, dashboard, design (no-green + fonts + brand-mark + more-dropdown + lang toggle), and full translations module CRUD + seed. Run: `cd /app && pytest backend/tests/backend_test.py -v`. Preview URL is baked in as BASE_URL constant \u2014 update if URL changes. All 5 viewports render without overflow; mobile menu testids follow pattern data-testid='mobile-nav-<slug>'.",
+  "rca of the issue": "N/A \u2014 no failures. Only nit: three testid names in review spec (header-call, header-book, brand-mark) are named -btn suffixed in code (header-call-btn, header-book-btn). Not a functional issue."
+}

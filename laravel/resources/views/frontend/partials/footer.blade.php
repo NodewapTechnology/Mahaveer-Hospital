@@ -3,10 +3,17 @@
         <div class="footer-grid">
             <div>
                 @if($siteSettings?->logo)
-                    <img src="{{ asset($siteSettings->logo) }}" alt="logo" style="max-height:60px;width:auto;background:#fff;padding:8px 14px;border-radius:12px;">
+                    <img src="{{ asset($siteSettings->logo) }}" alt="{{ $siteSettings->site_name }}" class="footer-logo">
+                @else
+                    <span class="footer-mark" aria-hidden="true">
+                        <svg width="52" height="52" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="44" height="44" rx="12" fill="#e5a530"/>
+                            <path d="M13 30 V14 L22 24 L31 14 V30" stroke="#3b1f4a" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+                            <circle cx="22" cy="30.5" r="2.2" fill="#d64a3a"/>
+                        </svg>
+                    </span>
                 @endif
-                <div class="footer-brand">{{ $siteSettings?->site_name ?? 'Mahaveer Hospital' }}</div>
-                <p style="max-width:340px;margin-top:.5rem;">{{ $siteSettings?->footer_text }}</p>
+                <p class="footer-tagline">{{ $siteSettings?->footer_text ?? $siteSettings?->tagline }}</p>
                 <div class="footer-socials">
                     @foreach($siteSocials as $s)
                         <a href="{{ $s->url }}" target="_blank" rel="noopener" title="{{ $s->platform }}" data-testid="social-{{ strtolower($s->platform) }}">

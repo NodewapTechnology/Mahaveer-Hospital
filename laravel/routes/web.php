@@ -28,6 +28,7 @@ use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\SeoSettingController;
 use App\Http\Controllers\Admin\WebsiteSettingController;
 use App\Http\Controllers\Admin\EnquiryController;
+use App\Http\Controllers\Admin\TranslationController;
 
 // ----------------- Public / Frontend -----------------
 Route::get('/lang/{lang}', function ($lang) {
@@ -84,5 +85,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('enquiries/{enquiry}', [EnquiryController::class, 'show'])->name('enquiries.show');
         Route::put('enquiries/{enquiry}', [EnquiryController::class, 'update'])->name('enquiries.update');
         Route::delete('enquiries/{enquiry}', [EnquiryController::class, 'destroy'])->name('enquiries.destroy');
+
+        Route::get('translations', [TranslationController::class, 'index'])->name('translations.index');
+        Route::get('translations/create', [TranslationController::class, 'create'])->name('translations.create');
+        Route::post('translations', [TranslationController::class, 'store'])->name('translations.store');
+        Route::post('translations/seed-defaults', [TranslationController::class, 'seedDefaults'])->name('translations.seed');
+        Route::get('translations/{translation}/edit', [TranslationController::class, 'edit'])->name('translations.edit');
+        Route::put('translations/{translation}', [TranslationController::class, 'update'])->name('translations.update');
+        Route::delete('translations/{translation}', [TranslationController::class, 'destroy'])->name('translations.destroy');
     });
 });

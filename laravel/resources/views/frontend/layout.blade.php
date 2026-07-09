@@ -19,9 +19,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..800,0..100,0..1;1,9..144,300..800,0..100,0..1&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('css/site.css') }}?v=6">
+    <link rel="stylesheet" href="{{ asset('css/site.css') }}?v=8">
     @if($siteSettings?->favicon)<link rel="icon" href="{{ asset($siteSettings->favicon) }}">@endif
     @stack('head')
 </head>
@@ -46,7 +46,7 @@
         </a>
     @endif
 
-    <script src="{{ asset('js/site.js') }}?v=6"></script>
+    <script src="{{ asset('js/site.js') }}?v=8"></script>
     @stack('scripts')
 </body>
 </html>

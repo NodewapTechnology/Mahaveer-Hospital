@@ -4,8 +4,29 @@
     const toggle = document.querySelector('[data-mobile-toggle]');
     const menu = document.querySelector('[data-mobile-menu]');
     if (toggle && menu) {
-        toggle.addEventListener('click', () => menu.classList.toggle('open'));
+        toggle.addEventListener('click', () => {
+            menu.classList.toggle('open');
+            document.body.classList.toggle('menu-open', menu.classList.contains('open'));
+        });
+        // Close on link click
+        menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+            menu.classList.remove('open');
+            document.body.classList.remove('menu-open');
+        }));
     }
+
+    // Desktop "More" dropdown click support (mobile-first tap)
+    document.querySelectorAll('.nav-more > button').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            btn.parentElement.classList.toggle('open');
+        });
+    });
+    document.addEventListener('click', (e) => {
+        document.querySelectorAll('.nav-more.open').forEach(el => {
+            if (!el.contains(e.target)) el.classList.remove('open');
+        });
+    });
 
     // Reveal on scroll
     const io = new IntersectionObserver((entries) => {

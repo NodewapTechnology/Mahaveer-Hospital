@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=3">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=5">
 </head>
 <body class="admin-body">
     <aside class="admin-sidebar" data-testid="admin-sidebar">
@@ -38,6 +38,7 @@
                     ['route' => 'admin.social-links.index', 'label' => 'Social Links', 'icon' => 'fa-share-nodes', 'match' => ['admin/social-links']],
                     ['route' => 'admin.seo-settings.index', 'label' => 'SEO Settings', 'icon' => 'fa-magnifying-glass', 'match' => ['admin/seo-settings']],
                     ['route' => 'admin.website-settings.edit', 'label' => 'Website Settings', 'icon' => 'fa-sliders', 'match' => ['admin/website-settings']],
+                    ['route' => 'admin.translations.index', 'label' => 'Translations (EN/HI)', 'icon' => 'fa-language', 'match' => ['admin/translations']],
                 ];
             @endphp
             @foreach($menu as $m)

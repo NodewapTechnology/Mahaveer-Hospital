@@ -7,7 +7,7 @@ import re
 import pytest
 import requests
 
-BASE_URL = "https://doctor-clinic-portal-1.preview.emergentagent.com"
+BASE_URL = "https://c8ed9e64-033a-470d-91f8-3410b04bb799.preview.emergentagent.com"
 ADMIN_EMAIL = "admin@mahaveerhospital.com"
 ADMIN_PASS = "Admin@12345"
 
@@ -249,3 +249,128 @@ def test_admin_logout_and_reprotection():
     r4 = s.get(f"{BASE_URL}/admin", allow_redirects=False, timeout=30)
     assert r4.status_code in (302, 303)
     assert "login" in r4.headers.get("Location", "").lower()
+
+
+
+# ---------- Design / responsive checks ----------
+def test_no_green_colors_in_css(public_session):
+    """Homepage HTML/CSS should not contain green hex codes in fonts/text/borders. Only #25d366 (WhatsApp bg) is allowed."""
+    r = public_session.get(f"{BASE_URL}/", timeout=30)
+    css_r = public_session.get(f"{BASE_URL}/css/site.css", timeout=30)
+    assert css_r.status_code == 200
+    body = css_r.text.lower()
+    # Common green hex codes that should NOT be used
+    bad_greens = ["#22c55e", "#16a34a", "#15803d", "#166534", "#14532d", "#0f766e", "#059669", "#10b981", "#34d399", "#a7f3d0", "green;"]
+    found = [g for g in bad_greens if g in body]
+    assert not found, f"Green colors found in site.css: {found}"
+
+
+def test_fonts_loaded(public_session):
+    r = public_session.get(f"{BASE_URL}/", timeout=30)
+    assert "Fraunces" in r.text, "Fraunces font not referenced in layout"
+    assert "Manrope" in r.text, "Manrope font not referenced in layout"
+
+
+def test_header_svg_logo_no_text_fallback(public_session):
+    r = public_session.get(f"{BASE_URL}/", timeout=30)
+    assert r.status_code == 200
+    # brand-fallback must be gone
+    assert 'brand-fallback' not in r.text, "text-based logo fallback (brand-fallback) should be removed"
+    # SVG mark should be present
+    assert 'brand-mark' in r.text or '<svg' in r.text, "SVG logo mark not found"
+
+
+def test_header_has_more_dropdown_and_lang_toggle(public_session):
+    r = public_session.get(f"{BASE_URL}/", timeout=30)
+    body = r.text
+    assert 'data-testid="nav-more"' in body, "'More' dropdown missing"
+    assert 'data-testid="lang-en"' in body, "lang-en toggle missing"
+    assert 'data-testid="lang-hi"' in body, "lang-hi toggle missing"
+    for slug in ["gallery", "events", "offers", "testimonials", "blog", "contact"]:
+        assert f'data-testid="nav-more-{slug}"' in body, f"nav-more-{slug} link missing"
+
+
+def test_language_toggle_switches_to_hindi(public_session):
+    s = requests.Session()
+    s.headers.update({"User-Agent": "pytest-lang"})
+    # switch lang
+    r = s.get(f"{BASE_URL}/lang/hi", timeout=30, allow_redirects=True)
+    assert r.status_code == 200
+    home = s.get(f"{BASE_URL}/", timeout=30)
+    assert home.status_code == 200
+    # Hindi labels should appear (at least one of the nav Hindi words)
+    hindi_words = ["होम", "हमारे बारे में", "सेवाएं", "डॉक्टर्स", "और"]
+    found_any = any(w in home.text for w in hindi_words)
+    assert found_any, "no Hindi labels found on homepage after /lang/hi"
+    # switch back
+    s.get(f"{BASE_URL}/lang/en", timeout=30)
+
+
+# ---------- Admin translations module ----------
+def test_admin_translations_page_loads(admin_session):
+    r = admin_session.get(f"{BASE_URL}/admin/translations", timeout=30)
+    assert r.status_code == 200, f"/admin/translations -> {r.status_code}"
+    assert 'data-testid="translations-search"' in r.text
+    assert 'data-testid="btn-seed-defaults"' in r.text
+    assert 'data-testid="btn-add-translation"' in r.text
+
+
+def test_admin_sidebar_has_translations_link(admin_session):
+    r = admin_session.get(f"{BASE_URL}/admin", timeout=30)
+    assert r.status_code == 200
+    assert 'data-testid="admin-nav-translations-(en/hi)"' in r.text or 'admin-nav-translations' in r.text.lower()
+
+
+def test_admin_translations_seed_defaults(admin_session):
+    r = admin_session.get(f"{BASE_URL}/admin/translations", timeout=30)
+    token = _csrf(r.text)
+    r2 = admin_session.post(
+        f"{BASE_URL}/admin/translations/seed-defaults",
+        data={"_token": token},
+        allow_redirects=False, timeout=60,
+    )
+    assert r2.status_code in (302, 303), f"seed defaults -> {r2.status_code}"
+    # After seed, listing should have entries
+    r3 = admin_session.get(f"{BASE_URL}/admin/translations", timeout=30)
+    assert r3.status_code == 200
+    # Common keys like nav.home should appear
+    assert "nav.home" in r3.text.lower() or "nav." in r3.text.lower(), "seeded translation keys missing"
+
+
+def test_admin_translation_crud(admin_session):
+    # Create
+    r = admin_session.get(f"{BASE_URL}/admin/translations/create", timeout=30)
+    assert r.status_code == 200
+    token = _csrf(r.text)
+    key = "test.pytest.key"
+    r2 = admin_session.post(
+        f"{BASE_URL}/admin/translations",
+        data={"_token": token, "key": key, "en_value": "TEST_EN", "hi_value": "टेस्ट_एचआई"},
+        allow_redirects=False, timeout=30,
+    )
+    assert r2.status_code in (302, 303), f"translation create -> {r2.status_code}"
+    listing = admin_session.get(f"{BASE_URL}/admin/translations?q=test.pytest", timeout=30)
+    assert key in listing.text, "created translation not found in listing"
+    m = re.search(rf'/admin/translations/(\d+)/edit[^>]*>[^<]*(?:{re.escape(key)}|Edit)', listing.text)
+    # fallback: find any translation edit id in listing
+    m2 = re.search(r'/admin/translations/(\d+)/edit', listing.text)
+    trans_id = (m or m2).group(1)
+    # Edit
+    edit = admin_session.get(f"{BASE_URL}/admin/translations/{trans_id}/edit", timeout=30)
+    assert edit.status_code == 200
+    etoken = _csrf(edit.text)
+    r3 = admin_session.post(
+        f"{BASE_URL}/admin/translations/{trans_id}",
+        data={"_token": etoken, "_method": "PUT", "key": key, "en_value": "TEST_EN_UPDATED", "hi_value": "टेस्ट_updated"},
+        allow_redirects=False, timeout=30,
+    )
+    assert r3.status_code in (302, 303), f"translation update -> {r3.status_code}"
+    # Delete
+    dlist = admin_session.get(f"{BASE_URL}/admin/translations?q=test.pytest", timeout=30)
+    dtoken = _csrf(dlist.text)
+    r4 = admin_session.post(
+        f"{BASE_URL}/admin/translations/{trans_id}",
+        data={"_token": dtoken, "_method": "DELETE"},
+        allow_redirects=False, timeout=30,
+    )
+    assert r4.status_code in (302, 303), f"translation delete -> {r4.status_code}"
