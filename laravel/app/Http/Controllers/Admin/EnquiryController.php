@@ -15,15 +15,43 @@ class EnquiryController extends AdminBaseController
                 $qq->where('name', 'like', "%$s%")
                     ->orWhere('phone', 'like', "%$s%")
                     ->orWhere('email', 'like', "%$s%")
+                    ->orWhere('village', 'like', "%$s%")
+                    ->orWhere('district', 'like', "%$s%")
                     ->orWhere('subject', 'like', "%$s%")
                     ->orWhere('message', 'like', "%$s%");
             });
         }
-        if ($status = $r->get('status')) $q->where('status', $status);
+        if ($status = $r->get('status')) {
+            $q->where('status', $status);
+        }
+        if ($source = $r->get('source')) {
+            $q->where('source', $source);
+        }
+        // Date filter — by appointment date (preferred_date)
+        if ($date = $r->get('date')) {
+            $q->where('preferred_date', $date);
+        }
+        // Date range shortcut
+        if ($r->get('range') === 'today') {
+            $q->whereDate('created_at', now()->toDateString());
+        } elseif ($r->get('range') === 'week') {
+            $q->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+        }
+
+        $onlineAppointmentsCount = Enquiry::where('source', 'hero_form')->count();
+        $totalCount = Enquiry::count();
+        $todayCount = Enquiry::whereDate('created_at', now()->toDateString())->count();
+
         return view('admin.enquiries.index', [
             'items' => $q->latest()->paginate(20)->withQueryString(),
             'search' => $s ?? '',
             'status' => $status ?? '',
+            'source' => $source ?? '',
+            'date' => $date ?? '',
+            'range' => $r->get('range', ''),
+            'onlineAppointmentsCount' => $onlineAppointmentsCount,
+            'totalCount' => $totalCount,
+            'todayCount' => $todayCount,
         ]);
     }
 

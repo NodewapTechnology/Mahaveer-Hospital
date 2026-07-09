@@ -12,7 +12,7 @@
             <div class="form-group"><label>Published Date</label><input type="date" class="form-control" name="published_at" value="{{ old('published_at', optional($item->published_at)->format('Y-m-d')) }}"></div>
         </div>
         <div class="form-group"><label>Excerpt</label><textarea class="form-control" name="excerpt" rows="2">{{ old('excerpt', $item->excerpt) }}</textarea></div>
-        <div class="form-group"><label>Content (HTML supported)</label><textarea class="form-control" name="content" rows="10">{{ old('content', $item->content) }}</textarea></div>
+        <div class="form-group"><label>Content (HTML supported)</label><textarea class="form-control wysiwyg" name="content" rows="10">{{ old('content', $item->content) }}</textarea></div>
         <div class="form-group">
             <label>Cover Image</label>
             <input type="file" name="cover_image" accept="image/*" class="form-control" data-preview="blg-img">

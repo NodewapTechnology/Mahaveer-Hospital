@@ -79,16 +79,43 @@
                     </div>
                     <div><label for="subject">Subject</label><input type="text" id="subject" name="subject" class="form-control-mh" data-testid="contact-subject" value="{{ old('subject', 'Appointment Request') }}"></div>
                     <div><label for="message">Message</label><textarea id="message" name="message" class="form-control-mh" data-testid="contact-message">{{ old('message') }}</textarea></div>
+                    @php $recaptchaKey = optional(\App\Models\WebsiteSetting::first())->recaptcha_site_key ?: config('mahaveer.site_key'); @endphp
+                    @if($recaptchaKey)
+                        <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+                        <div style="font-size:.72rem;color:var(--c-muted);">Protected by reCAPTCHA — <a href="https://policies.google.com/privacy" target="_blank" rel="noopener" style="color:var(--c-primary);">Privacy</a> &amp; <a href="https://policies.google.com/terms" target="_blank" rel="noopener" style="color:var(--c-primary);">Terms</a></div>
+                    @endif
                     <button type="submit" class="btn-mh btn-primary-mh" style="justify-self:start;" data-testid="contact-submit"><i class="fas fa-paper-plane"></i> Send Enquiry</button>
                 </form>
             </div>
         </div>
 
         @if($siteContact?->map_embed)
-            <div style="margin-top:3rem;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--c-line);height:400px;">
+            <div style="margin-top:3rem;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--c-line);height:400px;">
                 <iframe src="{{ $siteContact->map_embed }}" style="border:0;width:100%;height:100%;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         @endif
     </div>
 </section>
+
+@php $siteKey = optional(\App\Models\WebsiteSetting::first())->recaptcha_site_key ?: config('mahaveer.site_key'); @endphp
+@if($siteKey)
+    <script src="https://www.google.com/recaptcha/api.js?render={{ $siteKey }}"></script>
+    <script>
+        (function() {
+            const form = document.querySelector('form[data-testid="contact-form"]');
+            if (!form) return;
+            form.addEventListener('submit', (e) => {
+                if (form.dataset.captchaReady === '1') return;
+                e.preventDefault();
+                grecaptcha.ready(() => {
+                    grecaptcha.execute('{{ $siteKey }}', {action: 'enquiry'}).then((token) => {
+                        document.getElementById('g-recaptcha-response').value = token;
+                        form.dataset.captchaReady = '1';
+                        form.submit();
+                    });
+                });
+            });
+        })();
+    </script>
+@endif
 @endsection

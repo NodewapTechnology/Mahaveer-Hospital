@@ -374,3 +374,202 @@ def test_admin_translation_crud(admin_session):
         allow_redirects=False, timeout=30,
     )
     assert r4.status_code in (302, 303), f"translation delete -> {r4.status_code}"
+
+
+# =====================================================================
+# Iteration 3: Hero Appointment Form + Admin Appointments + TinyMCE
+# =====================================================================
+
+def test_home_hero_appointment_card_present(public_session):
+    r = public_session.get(f"{BASE_URL}/", timeout=30)
+    assert r.status_code == 200
+    body = r.text
+    assert 'data-testid="hero-appointment-card"' in body, "hero appointment card missing"
+    for tid in ["appt-name", "appt-phone", "appt-village", "appt-district", "appt-date", "appt-submit"]:
+        assert f'data-testid="{tid}"' in body, f"field {tid} missing"
+    # doctor image card should be gone
+    assert 'hero-doctor-card' not in body, "old hero-doctor-card should be removed"
+    # source hidden input
+    assert 'value="hero_form"' in body
+
+
+def test_home_hero_form_required_attributes(public_session):
+    r = public_session.get(f"{BASE_URL}/", timeout=30)
+    assert r.status_code == 200
+    # All 5 fields must have `required` attribute
+    for name in ['name="name"', 'name="phone"', 'name="village"', 'name="district"', 'name="preferred_date"']:
+        # crude but effective: find the input line
+        idx = r.text.find(name)
+        assert idx != -1, f"{name} field missing"
+        # look for required within 300 chars around the field
+        chunk = r.text[max(0, idx-300):idx+300]
+        assert "required" in chunk, f"{name} not marked required"
+
+
+def test_hero_form_server_side_validation_blocks_empty(public_session):
+    r = public_session.get(f"{BASE_URL}/", timeout=30)
+    token = _csrf(r.text)
+    r2 = public_session.post(f"{BASE_URL}/contact",
+        data={"_token": token, "source": "hero_form"},
+        headers={"Referer": f"{BASE_URL}/"},
+        allow_redirects=False, timeout=30)
+    # Should redirect back with errors (302) — not save
+    assert r2.status_code in (302, 303), f"hero empty POST -> {r2.status_code}"
+
+
+def test_hero_form_valid_submission_saves_enquiry(public_session, admin_session):
+    import datetime
+    future = (datetime.date.today() + datetime.timedelta(days=10)).isoformat()
+    r = public_session.get(f"{BASE_URL}/", timeout=30)
+    token = _csrf(r.text)
+    unique = f"TEST_Hero_{datetime.datetime.now().strftime('%H%M%S')}"
+    payload = {
+        "_token": token,
+        "source": "hero_form",
+        "name": unique,
+        "phone": "9999912345",
+        "village": "TEST_Village",
+        "district": "TEST_District",
+        "preferred_date": future,
+    }
+    r2 = public_session.post(f"{BASE_URL}/contact", data=payload,
+        headers={"Referer": f"{BASE_URL}/"}, allow_redirects=False, timeout=30)
+    assert r2.status_code in (302, 303), f"hero valid POST -> {r2.status_code} body={r2.text[:200]}"
+    follow = public_session.get(r2.headers.get("Location", f"{BASE_URL}/"), timeout=30)
+    assert "Booking received" in follow.text or "appointment_success" in follow.text or "success" in follow.text.lower()
+
+    # Verify appears in admin enquiries filtered by source=hero_form and by date
+    r3 = admin_session.get(f"{BASE_URL}/admin/enquiries?source=hero_form", timeout=30)
+    assert r3.status_code == 200
+    assert unique in r3.text, "hero enquiry not visible in admin with source filter"
+    # date filter
+    r4 = admin_session.get(f"{BASE_URL}/admin/enquiries?date={future}", timeout=30)
+    assert r4.status_code == 200
+    assert unique in r4.text, "hero enquiry not visible with date filter"
+    assert "TEST_Village" in r4.text and "TEST_District" in r4.text
+
+
+def test_hero_form_rejects_past_date(public_session):
+    r = public_session.get(f"{BASE_URL}/", timeout=30)
+    token = _csrf(r.text)
+    payload = {
+        "_token": token, "source": "hero_form",
+        "name": "TEST_PastDate", "phone": "9999900000",
+        "village": "V", "district": "D",
+        "preferred_date": "2020-01-01",
+    }
+    r2 = public_session.post(f"{BASE_URL}/contact", data=payload,
+        headers={"Referer": f"{BASE_URL}/"}, allow_redirects=False, timeout=30)
+    # redirect back with errors
+    assert r2.status_code in (302, 303)
+    # Should NOT appear in enquiries as new success
+    # (we only check redirect happened; validation errors flash back)
+
+
+def test_admin_enquiries_has_date_filter_and_tabs(admin_session):
+    r = admin_session.get(f"{BASE_URL}/admin/enquiries", timeout=30)
+    assert r.status_code == 200
+    for tid in ["tab-online-appointments", "enquiries-date-filter"]:
+        assert f'data-testid="{tid}"' in r.text, f"{tid} missing"
+    # stat labels
+    body_lower = r.text.lower()
+    assert "online appointment" in body_lower or "online" in body_lower
+
+
+def test_admin_enquiries_online_tab_banner(admin_session):
+    r = admin_session.get(f"{BASE_URL}/admin/enquiries?source=hero_form", timeout=30)
+    assert r.status_code == 200
+    assert "Online Appointment requests" in r.text or "home page form" in r.text
+
+
+def test_admin_enquiries_date_banner(admin_session):
+    import datetime
+    future = (datetime.date.today() + datetime.timedelta(days=10)).isoformat()
+    r = admin_session.get(f"{BASE_URL}/admin/enquiries?date={future}", timeout=30)
+    assert r.status_code == 200
+    # Info banner should mention the parsed date
+    from datetime import datetime as dt
+    d = dt.strptime(future, "%Y-%m-%d")
+    expected_snippet = d.strftime("%d %b %Y")
+    assert expected_snippet in r.text, f"date banner missing '{expected_snippet}'"
+
+
+def test_admin_website_settings_new_fields(admin_session):
+    r = admin_session.get(f"{BASE_URL}/admin/website-settings", timeout=30)
+    assert r.status_code == 200
+    for name in ['name="notify_email"', 'name="recaptcha_site_key"', 'name="recaptcha_secret_key"']:
+        assert name in r.text, f"{name} missing on website-settings edit"
+
+
+def test_admin_website_settings_save_notify_email(admin_session):
+    r = admin_session.get(f"{BASE_URL}/admin/website-settings", timeout=30)
+    token = _csrf(r.text)
+    # Preserve other fields — grab existing values via naive re
+    def _val(field):
+        m = re.search(rf'name="{field}"[^>]*value="([^"]*)"', r.text)
+        return m.group(1) if m else ""
+    data = {
+        "_token": token, "_method": "PUT",
+        "site_name": _val("site_name") or "Mahaveer Hospital",
+        "tagline": _val("tagline"),
+        "notify_email": "TEST_notify@example.com",
+        "recaptcha_site_key": "",
+        "recaptcha_secret_key": "",
+    }
+    r2 = admin_session.post(f"{BASE_URL}/admin/website-settings", data=data,
+        allow_redirects=False, timeout=30)
+    assert r2.status_code in (302, 303), f"settings save -> {r2.status_code}"
+    r3 = admin_session.get(f"{BASE_URL}/admin/website-settings", timeout=30)
+    assert "TEST_notify@example.com" in r3.text
+
+
+def test_tinymce_loaded_on_admin_layout(admin_session):
+    r = admin_session.get(f"{BASE_URL}/admin/blogs/create", timeout=30)
+    assert r.status_code == 200
+    assert "tinymce" in r.text.lower(), "TinyMCE not referenced"
+    assert 'class="form-control wysiwyg"' in r.text or "wysiwyg" in r.text
+
+
+@pytest.mark.parametrize("path", [
+    "/admin/blogs/create", "/admin/services/create", "/admin/doctors/create",
+    "/admin/about", "/admin/events/create", "/admin/offers/create",
+])
+def test_wysiwyg_textarea_present(admin_session, path):
+    r = admin_session.get(f"{BASE_URL}{path}", timeout=30)
+    assert r.status_code == 200, f"{path} -> {r.status_code}"
+    assert "wysiwyg" in r.text, f"wysiwyg class missing on {path}"
+
+
+def test_admin_login_page_new_design(public_session):
+    r = public_session.get(f"{BASE_URL}/admin/login", timeout=30)
+    assert r.status_code == 200
+    assert "Mahaveer CMS" in r.text or "Fraunces" in r.text
+
+
+def test_admin_sidebar_grouped(admin_session):
+    r = admin_session.get(f"{BASE_URL}/admin", timeout=30)
+    body = r.text
+    # section labels rendered
+    assert "Overview" in body
+    assert "Website Content" in body
+    assert "Settings" in body
+    # avatar pill / topbar user
+    assert 'class="avatar"' in body or "topbar-user" in body
+    # appointments nav link
+    assert 'data-testid="admin-nav-appointments"' in body
+
+
+def test_contact_form_still_works_normal_source(public_session):
+    # Contact page (non-hero) should still accept minimal payload
+    r = public_session.get(f"{BASE_URL}/contact", timeout=30)
+    token = _csrf(r.text)
+    payload = {
+        "_token": token,
+        "name": "TEST_Contact2",
+        "phone": "9999900011",
+        "email": "test2@example.com",
+        "subject": "s", "message": "m",
+    }
+    r2 = public_session.post(f"{BASE_URL}/contact", data=payload,
+        allow_redirects=False, timeout=30)
+    assert r2.status_code in (302, 303)

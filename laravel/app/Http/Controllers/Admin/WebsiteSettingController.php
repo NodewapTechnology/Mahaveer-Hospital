@@ -25,6 +25,9 @@ class WebsiteSettingController extends AdminBaseController
             'accent_color' => 'nullable|string|max:20',
             'logo' => 'nullable|image|max:5120',
             'favicon' => 'nullable|image|max:2048',
+            'recaptcha_site_key' => 'nullable|string|max:120',
+            'recaptcha_secret_key' => 'nullable|string|max:120',
+            'notify_email' => 'nullable|email|max:150',
         ]);
         $s = WebsiteSetting::firstOrCreate(['id' => 1]);
         $data['logo'] = $this->handleImageUpload($r, 'logo', $s->logo, 'uploads/settings');

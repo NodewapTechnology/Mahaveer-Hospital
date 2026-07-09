@@ -16,7 +16,7 @@
             <div class="form-group"><label>Experience</label><input class="form-control" name="experience" value="{{ old('experience', $item->experience) }}" placeholder="e.g. 15 years"></div>
         </div>
         <div class="form-group"><label>Specialization</label><input class="form-control" name="specialization" value="{{ old('specialization', $item->specialization) }}"></div>
-        <div class="form-group"><label>Description / Bio</label><textarea class="form-control" name="description" rows="5">{{ old('description', $item->description) }}</textarea></div>
+        <div class="form-group"><label>Description / Bio</label><textarea class="form-control wysiwyg" name="description" rows="5">{{ old('description', $item->description) }}</textarea></div>
         <div class="form-row">
             <div class="form-group"><label>Available Timing</label><input class="form-control" name="available_timing" value="{{ old('available_timing', $item->available_timing) }}" placeholder="Mon–Sat 10AM – 8PM"></div>
             <div class="form-group"><label>Contact Phone</label><input class="form-control" name="contact_phone" value="{{ old('contact_phone', $item->contact_phone) }}"></div>

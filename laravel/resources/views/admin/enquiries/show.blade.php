@@ -9,8 +9,10 @@
         <div><div class="text-muted" style="font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;">Phone</div><div style="font-weight:600;margin-top:.3rem;"><a href="tel:{{ $item->phone }}">{{ $item->phone }}</a></div></div>
         <div><div class="text-muted" style="font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;">Email</div><div style="font-weight:600;margin-top:.3rem;">{{ $item->email ?: '—' }}</div></div>
         <div><div class="text-muted" style="font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;">Source</div><div style="font-weight:600;margin-top:.3rem;">{{ ucfirst($item->source) }}</div></div>
+        <div><div class="text-muted" style="font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;">Village</div><div style="font-weight:600;margin-top:.3rem;">{{ $item->village ?: '—' }}</div></div>
+        <div><div class="text-muted" style="font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;">District</div><div style="font-weight:600;margin-top:.3rem;">{{ $item->district ?: '—' }}</div></div>
         <div><div class="text-muted" style="font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;">Preferred Doctor</div><div style="font-weight:600;margin-top:.3rem;">{{ $item->preferred_doctor ?: '—' }}</div></div>
-        <div><div class="text-muted" style="font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;">Preferred Date</div><div style="font-weight:600;margin-top:.3rem;">{{ $item->preferred_date ?: '—' }}</div></div>
+        <div><div class="text-muted" style="font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;">Preferred Date</div><div style="font-weight:600;margin-top:.3rem;">{{ $item->preferred_date ? \Carbon\Carbon::parse($item->preferred_date)->format('d M Y (l)') : '—' }}</div></div>
         <div style="grid-column:1/-1;"><div class="text-muted" style="font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;">Subject</div><div style="font-weight:600;margin-top:.3rem;">{{ $item->subject ?: '—' }}</div></div>
         <div style="grid-column:1/-1;"><div class="text-muted" style="font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;">Message</div><div style="margin-top:.3rem;line-height:1.7;">{{ $item->message ?: '—' }}</div></div>
     </div>

@@ -13,7 +13,7 @@
             <div class="form-group"><label>Venue</label><input class="form-control" name="venue" value="{{ old('venue', $item->venue) }}"></div>
         </div>
         <div class="form-group"><label>Short Description</label><textarea class="form-control" name="short_description" rows="2">{{ old('short_description', $item->short_description) }}</textarea></div>
-        <div class="form-group"><label>Full Description (HTML supported)</label><textarea class="form-control" name="description" rows="6">{{ old('description', $item->description) }}</textarea></div>
+        <div class="form-group"><label>Full Description (HTML supported)</label><textarea class="form-control wysiwyg" name="description" rows="6">{{ old('description', $item->description) }}</textarea></div>
         <div class="form-group">
             <label>Cover Image</label>
             <input type="file" name="image" accept="image/*" class="form-control" data-preview="evt-img">

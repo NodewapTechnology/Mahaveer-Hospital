@@ -29,6 +29,29 @@
                 @if($item->favicon)<img id="ws-fav" src="{{ asset($item->favicon) }}" class="image-preview">@else<img id="ws-fav" class="image-preview" style="display:none;">@endif
             </div>
         </div>
+
+        <div style="margin:2rem 0 1rem;padding-top:1.5rem;border-top:1px solid var(--a-line);">
+            <h3 style="font-family:'Fraunces',serif;font-weight:500;color:var(--a-primary);margin:0 0 .3rem;font-size:1.15rem;">Notifications &amp; Security</h3>
+            <p class="text-muted" style="margin:0 0 1rem;font-size:.85rem;">Configure Google reCAPTCHA v3 to protect the contact form from spam, and set an email address to receive new enquiry notifications.</p>
+        </div>
+        <div class="form-group">
+            <label>Enquiry Notification Email</label>
+            <input class="form-control" type="email" name="notify_email" value="{{ old('notify_email', $item->notify_email ?? '') }}" placeholder="admin@example.com">
+            <div class="form-help">New appointment enquiries will be emailed here. Leave blank to use the contact page email address.</div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>reCAPTCHA Site Key</label>
+                <input class="form-control" name="recaptcha_site_key" value="{{ old('recaptcha_site_key', $item->recaptcha_site_key ?? '') }}" placeholder="6Lc...">
+                <div class="form-help">Get one at <a href="https://www.google.com/recaptcha/admin" target="_blank">google.com/recaptcha/admin</a> (v3 · your site)</div>
+            </div>
+            <div class="form-group">
+                <label>reCAPTCHA Secret Key</label>
+                <input class="form-control" name="recaptcha_secret_key" value="{{ old('recaptcha_secret_key', $item->recaptcha_secret_key ?? '') }}" placeholder="6Lc...">
+                <div class="form-help">Keep this secret. Leave both blank to disable captcha.</div>
+            </div>
+        </div>
+
         <button type="submit" class="btn-adm btn-primary"><i class="fas fa-save"></i> Save Settings</button>
     </form>
 </div>

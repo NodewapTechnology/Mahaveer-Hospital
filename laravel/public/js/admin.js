@@ -38,4 +38,22 @@ document.addEventListener('DOMContentLoaded', () => {
             if (row) row.remove();
         }
     });
+
+    // WYSIWYG: TinyMCE for any textarea.wysiwyg
+    if (document.querySelector('textarea.wysiwyg') && typeof tinymce !== 'undefined') {
+        tinymce.init({
+            selector: 'textarea.wysiwyg',
+            height: 380,
+            menubar: false,
+            branding: false,
+            promotion: false,
+            plugins: 'lists link image table code autoresize',
+            toolbar: 'undo redo | blocks | bold italic underline | forecolor | alignleft aligncenter alignright | bullist numlist | link image table | removeformat code',
+            content_style: "body{font-family:'Manrope',sans-serif;font-size:15px;color:#1a1523;line-height:1.6;padding:12px} h1,h2,h3{font-family:'Fraunces',serif;font-weight:500;color:#1a1523}",
+            skin: 'oxide',
+            paste_as_text: false,
+            relative_urls: false,
+        });
+    }
 });
+

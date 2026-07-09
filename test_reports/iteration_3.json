@@ -1,0 +1,34 @@
+{
+  "summary": "Iteration 3 verified: Hero appointment form replaces doctor image card (all 5 required fields + date picker), server-side validation for source=hero_form, admin Enquiries page date filter + Online Appointments tab + stat cards, TinyMCE WYSIWYG on blog/service/doctor/about/events/offers forms, Website Settings notify_email + reCAPTCHA fields, grouped admin sidebar (Overview/Website Content/Settings) with avatar pill, polished admin login page. Backend: 65/65 pytest passing (20 new tests added). Frontend: verified 5 viewports (1440/1200/1024/768/390) with 0px horizontal overflow, empty submit blocked by HTML5 required, full booking flow end-to-end (form -> DB -> admin listing with village/district/preferred_date -> date filter -> source=hero_form filter).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Hero form: all 5 fields correctly marked `required` with HTML5 constraint; server-side ContactController enforces required + after_or_equal:today when source=hero_form. Native <input type='date'> used with `min={today}` so past dates blocked at both layers.",
+    "Enquiry model saves village, district, preferred_date columns (migration 2026_01_11 ran). Verified via UI end-to-end: submitted booking appears in admin with village/district/date badge.",
+    "Admin Enquiries page has 3 stat cards (Total/Online/Received Today), tabs (All / Online Appointments / Contact Form / Today), and a filter form with search + date + status. Date filter ?date=YYYY-MM-DD and source filter ?source=hero_form both work and display info banner.",
+    "TinyMCE 6.8.3 loaded from jsdelivr CDN and initialized on all .wysiwyg textareas — iframe.tox-edit-area confirmed on /admin/blogs/create.",
+    "Website Settings: notify_email, recaptcha_site_key, recaptcha_secret_key all persist via POST /admin/website-settings. reCAPTCHA is inactive by default (empty keys) so contact form doesn't require captcha token, as designed.",
+    "Admin login redesign confirmed via screenshot: gradient mustard->coral M+ logo mark, Fraunces 'Mahaveer CMS' heading, aubergine background — no green anywhere.",
+    "Sidebar section labels 'Overview', 'Website Content', 'Settings' render correctly; avatar pill with initial 'A' visible in topbar.",
+    "Backend regression: all 10 public pages + all 15 admin listings still return 200. Contact form (source=contact) still saves enquiries."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (added 20 new tests: hero form fields/required/valid submission/past date rejection, admin enquiries date+source filter, TinyMCE presence on 6 admin content forms, website-settings new fields + save, grouped sidebar, new login design, non-hero contact regression)"
+  ],
+  "success_rate": {"backend": "100% (65/65)", "frontend": "100% - all critical flows verified across 5 viewports"},
+  "test_credentials": "admin@mahaveerhospital.com / Admin@12345 - verified working",
+  "seed_data_creation": "Created via pytest and Playwright: TEST_Hero_* and UI_Hero_* enquiries (source=hero_form, preferred_date=today+10d/+15d, village=TEST_Village/UI_Village), TEST_Contact2 enquiry (source=contact), TEST_notify@example.com saved in website_settings.notify_email.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "backend_test.py now has 65 tests. Run: `cd /app && pytest backend/tests/backend_test.py -v`. Preview URL baked in as BASE_URL constant at top of file (update if changed). Hero form submission uses POST /contact with source=hero_form + preferred_date>=today; date filter is ?date=YYYY-MM-DD, source filter is ?source=hero_form. Admin sidebar data-testid pattern: admin-nav-<label-lowercased-hyphenated> (e.g. admin-nav-appointments, admin-nav-website-settings). TinyMCE loads from jsdelivr CDN so requires internet at page load (works fine in preview env).",
+  "rca of the issue": "N/A - no failures."
+}

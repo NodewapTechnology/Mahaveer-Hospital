@@ -12,7 +12,7 @@
             <div class="form-group"><label>Discount Label</label><input class="form-control" name="discount_label" value="{{ old('discount_label', $item->discount_label) }}" placeholder="e.g. 30% OFF"></div>
         </div>
         <div class="form-group"><label>Short Description</label><textarea class="form-control" name="short_description" rows="2">{{ old('short_description', $item->short_description) }}</textarea></div>
-        <div class="form-group"><label>Full Description (HTML)</label><textarea class="form-control" name="description" rows="6">{{ old('description', $item->description) }}</textarea></div>
+        <div class="form-group"><label>Full Description (HTML)</label><textarea class="form-control wysiwyg" name="description" rows="6">{{ old('description', $item->description) }}</textarea></div>
         <div class="form-row">
             <div class="form-group"><label>Valid From</label><input type="date" class="form-control" name="valid_from" value="{{ old('valid_from', optional($item->valid_from)->format('Y-m-d')) }}"></div>
             <div class="form-group"><label>Valid Until</label><input type="date" class="form-control" name="valid_until" value="{{ old('valid_until', optional($item->valid_until)->format('Y-m-d')) }}"></div>

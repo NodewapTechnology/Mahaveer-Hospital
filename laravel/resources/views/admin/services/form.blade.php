@@ -12,7 +12,7 @@
             <div class="form-group"><label>Icon (Font Awesome class, e.g. fa-scissors)</label><input class="form-control" name="icon" value="{{ old('icon', $item->icon) }}"></div>
         </div>
         <div class="form-group"><label>Short Description</label><textarea class="form-control" name="short_description" rows="2">{{ old('short_description', $item->short_description) }}</textarea></div>
-        <div class="form-group"><label>Full Description (HTML supported)</label><textarea class="form-control" name="description" rows="6">{{ old('description', $item->description) }}</textarea></div>
+        <div class="form-group"><label>Full Description (HTML supported)</label><textarea class="form-control wysiwyg" name="description" rows="6">{{ old('description', $item->description) }}</textarea></div>
         <div class="form-group">
             <label>Features / Highlights</label>
             <div id="features-container">

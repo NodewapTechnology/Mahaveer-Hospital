@@ -41,23 +41,85 @@
             </div>
 
             <div class="hero-visual reveal">
-                <div class="hero-doctor-card" data-testid="hero-doctor-card">
-                    @if($featuredDoctor?->photo)
-                        <img src="{{ asset($featuredDoctor->photo) }}" alt="{{ $featuredDoctor->name }}">
-                    @endif
-                    <span class="emergency-pill">● 24/7 Emergency</span>
-                    <div class="hero-doctor-overlay">
-                        <div class="name">{{ $featuredDoctor?->name ?? 'Dr. Amardeep' }}</div>
-                        <div class="cred">{{ $featuredDoctor?->qualification ?? 'MBBS, MS, FMAS' }}</div>
-                        <div class="role">{{ $featuredDoctor?->designation ?? 'Senior Consultant' }}</div>
-                    </div>
-                    <div class="safe-badge">
-                        <div class="icn"><i class="fas fa-shield-heart"></i></div>
+                <div class="hero-appt-card" data-testid="hero-appointment-card">
+                    <span class="emergency-pill">● {{ \App\Helpers\I18n::ui('label.emergency') }}</span>
+
+                    <div class="hero-appt-head">
+                        <div class="mini-icon"><i class="fas fa-calendar-check"></i></div>
                         <div>
-                            <div class="title">100% Safe Care</div>
-                            <div class="sub">NABH Standard Protocols</div>
+                            <div class="eyebrow" style="margin:0;color:var(--c-accent);">Quick Booking</div>
+                            <h3 style="font-family:var(--f-display);font-size:1.55rem;margin-top:.3rem;line-height:1.05;">Book Your Appointment</h3>
+                            <p style="font-size:.85rem;color:var(--c-muted);margin-top:.3rem;">Fill this form — we'll call to confirm within a few hours.</p>
                         </div>
                     </div>
+
+                    @if(session('appointment_success'))
+                        <div class="alert-mh alert-success-mh" data-testid="appt-success" style="margin-bottom:.9rem;">
+                            <i class="fas fa-check-circle"></i> {{ session('appointment_success') }}
+                        </div>
+                    @endif
+                    @if($errors->has('appt'))
+                        <div class="alert-mh alert-danger-mh" data-testid="appt-error" style="margin-bottom:.9rem;">
+                            {{ $errors->first('appt') }}
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('contact.submit') }}" class="hero-appt-form" data-testid="hero-appointment-form" novalidate>
+                        @csrf
+                        <input type="hidden" name="source" value="hero_form">
+                        <input type="hidden" name="subject" value="Online Appointment Request">
+
+                        <div class="field-group {{ $errors->has('name') ? 'has-error' : '' }}">
+                            <label for="appt-name">Full Name <span class="req">*</span></label>
+                            <div class="input-wrap">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="appt-name" name="name" required placeholder="Your name" value="{{ old('name') }}" data-testid="appt-name" autocomplete="name">
+                            </div>
+                        </div>
+
+                        <div class="field-group {{ $errors->has('phone') ? 'has-error' : '' }}">
+                            <label for="appt-phone">Mobile Number <span class="req">*</span></label>
+                            <div class="input-wrap">
+                                <i class="fas fa-phone"></i>
+                                <input type="tel" id="appt-phone" name="phone" required placeholder="10-digit mobile" value="{{ old('phone') }}" data-testid="appt-phone" inputmode="numeric" pattern="[0-9+\-\s]{7,15}" autocomplete="tel">
+                            </div>
+                        </div>
+
+                        <div class="field-row">
+                            <div class="field-group {{ $errors->has('village') ? 'has-error' : '' }}">
+                                <label for="appt-village">Village <span class="req">*</span></label>
+                                <div class="input-wrap">
+                                    <i class="fas fa-house"></i>
+                                    <input type="text" id="appt-village" name="village" required placeholder="Village name" value="{{ old('village') }}" data-testid="appt-village">
+                                </div>
+                            </div>
+                            <div class="field-group {{ $errors->has('district') ? 'has-error' : '' }}">
+                                <label for="appt-district">District <span class="req">*</span></label>
+                                <div class="input-wrap">
+                                    <i class="fas fa-map-location-dot"></i>
+                                    <input type="text" id="appt-district" name="district" required placeholder="District" value="{{ old('district') }}" data-testid="appt-district">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field-group {{ $errors->has('preferred_date') ? 'has-error' : '' }}">
+                            <label for="appt-date">Preferred Date <span class="req">*</span></label>
+                            <div class="input-wrap date-wrap">
+                                <i class="fas fa-calendar-days"></i>
+                                <input type="date" id="appt-date" name="preferred_date" required min="{{ date('Y-m-d') }}" value="{{ old('preferred_date') }}" data-testid="appt-date">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-mh btn-accent-mh hero-appt-submit" data-testid="appt-submit">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Book My Appointment</span>
+                        </button>
+
+                        <div class="hero-appt-note">
+                            <i class="fas fa-shield-halved"></i>
+                            <span>Your details are safe. NABH Standard Protocols · 100% confidential.</span>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -346,14 +408,17 @@
 {{-- CTA --}}
 <section class="section" data-testid="cta-section">
     <div class="container-x">
-        <div class="reveal" style="background:linear-gradient(135deg, var(--c-primary), var(--c-primary-dark)); color:#fff; border-radius:var(--radius-lg); padding:4rem 2.5rem; text-align:center; position:relative; overflow:hidden;">
-            <div style="position:absolute;top:-100px;right:-80px;width:280px;height:280px;background:radial-gradient(closest-side,var(--c-accent),transparent);opacity:.4;"></div>
-            <div style="position:relative;">
-                <h2 style="color:#fff;">Ready to take the first step towards better health?</h2>
-                <p style="color:rgba(255,255,255,.85);margin-top:1rem;max-width:640px;margin-left:auto;margin-right:auto;">Book an appointment with our specialists today. Same-day slots available for urgent consultations.</p>
-                <div style="margin-top:2rem;display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+        <div class="cta-band reveal">
+            <div class="cta-glow"></div>
+            <div class="cta-inner">
+                <span class="eyebrow" style="color:var(--c-highlight);">Ready when you are</span>
+                <h2>Ready to take the first step towards <span class="italic-swash" style="color:var(--c-highlight);">better health?</span></h2>
+                <p>Book an appointment with our specialists today. Same-day slots available for urgent consultations.</p>
+                <div class="cta-actions">
                     <a href="{{ route('contact') }}" class="btn-mh btn-accent-mh" data-testid="cta-book"><i class="fas fa-calendar-plus"></i> Book Appointment</a>
-                    <a href="tel:{{ $siteContact?->phone_primary }}" class="btn-mh" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);" data-testid="cta-call"><i class="fas fa-phone"></i> {{ $siteContact?->phone_primary }}</a>
+                    @if($siteContact?->phone_primary)
+                        <a href="tel:{{ $siteContact->phone_primary }}" class="btn-mh cta-ghost" data-testid="cta-call"><i class="fas fa-phone"></i> {{ $siteContact->phone_primary }}</a>
+                    @endif
                 </div>
             </div>
         </div>

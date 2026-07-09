@@ -12,7 +12,7 @@
             <div class="form-group"><label>Heading <span class="req">*</span></label><input class="form-control" name="heading" value="{{ old('heading', $item->heading) }}" required></div>
         </div>
         <div class="form-group"><label>Intro (short paragraph)</label><textarea class="form-control" name="intro" rows="3">{{ old('intro', $item->intro) }}</textarea></div>
-        <div class="form-group"><label>Body (HTML supported)</label><textarea class="form-control" name="body" rows="8">{{ old('body', $item->body) }}</textarea></div>
+        <div class="form-group"><label>Body (HTML supported)</label><textarea class="form-control wysiwyg" name="body" rows="8">{{ old('body', $item->body) }}</textarea></div>
         <div class="form-group">
             <label>Image</label>
             <input type="file" name="image" accept="image/*" class="form-control" data-preview="about-img-preview">
