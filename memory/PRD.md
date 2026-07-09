@@ -1,71 +1,60 @@
 # Mahaveer Hospital — Laravel 11 CMS
 
 ## Original Problem Statement
-Convert the existing React-based Mahaveer Hospital website into a fully dynamic **PHP Laravel 11 + MySQL** CMS with a complete admin panel to manage all frontend content. Requirements:
-- Modules: Dashboard, Banners, About, Services, Doctors, Gallery, Events, Testimonials, Offers, Blogs/News, FAQs, Contact Details, Social Media Links, SEO Settings, Website Settings.
-- Doctor module: Name, Photo, Designation, Qualification, Experience, Specialization, Description, Available Timing, Contact Details, Status.
-- Frontend: light theme only (existing dark mode removed).
-- Contact/Enquiry form data stored in MySQL, manageable from admin (list, search, status update).
-- Session-based admin login.
+User's original request (Hindi/Hinglish): rebuild the healthcare website into a fully-dynamic, admin-managed Laravel 11 + MySQL CMS. Iteration 2 requests: (a) fully responsive across mobile/tablet/desktop, (b) NO green colors in fonts, (c) modern & unique premium frontend design, (d) desktop menu with only 4 primary items (Home/About/Services/Doctors) — remaining items inside "More" dropdown, (e) Call & Book buttons must be icon-only circular in header, (f) admin-uploaded logo only, NO text-based logo fallback (use SVG mark instead), (g) English↔Hindi language toggle everywhere, (h) admin panel must have a Language Translations module, (i) professional fonts throughout.
 
 ## Architecture
 - **Framework**: Laravel 11.54 (PHP 8.2)
-- **Database**: MariaDB 10.11 (`mahaveer_cms`)
-- **Frontend**: Blade templates + hand-crafted light-theme CSS (Fraunces + Manrope, teal + saffron palette) + Bootstrap 5 grid + Font Awesome 6
-- **Admin**: Custom Blade layout with dark ink sidebar, ivory main area
-- **Runtime**: PHP built-in server on port 3000 (via `/app/frontend/package.json` -> yarn start -> php -S)
-- **Static assets**: Router at `/app/laravel/server.php` passes existing files under `public/` to the built-in server and everything else to `public/index.php`.
+- **Database**: MariaDB 10.11 (`mahaveer_cms`) — supervisor `mariadb`
+- **Frontend**: Blade + hand-crafted CSS. **Fraunces** (display serif) + **Manrope** (body sans). Palette: midnight aubergine (#3b1f4a) · warm coral (#d64a3a) · mustard (#e5a530) · cream (#fbf6ef). Zero green in text/font/border. WhatsApp icon is the only green element (background only).
+- **Admin**: Custom Blade layout, aubergine ink sidebar, ivory main area — palette aligned with frontend.
+- **Runtime**: PHP built-in server on port 3000 (via `/app/frontend/package.json` → `php -S 0.0.0.0:3000 -t /app/laravel/public /app/laravel/server.php`)
+- **Supervisor**: `frontend` (Laravel), `mariadb` (added in iteration 2), plus platform defaults.
 
 ## Files & Layout
 ```
 /app/laravel/
 ├── app/Http/Controllers/
 │   ├── Frontend/ (Home, About, Service, Doctor, Gallery, Event, Testimonial, Offer, Blog, Contact)
-│   └── Admin/    (Auth, Dashboard, Banner, About, Service, Doctor, Gallery, Event, Testimonial, Offer, Blog, Faq, ContactDetail, SocialLink, SeoSetting, WebsiteSetting, Enquiry, AdminBase)
-├── app/Models/   (Admin, Banner, AboutPage, Service, Doctor, GalleryItem, Event, Testimonial, Offer, Blog, Faq, ContactDetail, SocialLink, SeoSetting, WebsiteSetting, Enquiry)
-├── database/migrations/ 2026_01_01_000000_create_cms_tables.php
-├── database/seeders/DatabaseSeeder.php
-├── resources/views/frontend/ + resources/views/admin/
-├── public/css/site.css + public/css/admin.css + public/js/site.js + public/js/admin.js
+│   └── Admin/    (Auth, Dashboard, Banner, About, Service, Doctor, Gallery, Event, Testimonial, Offer, Blog, Faq, ContactDetail, SocialLink, SeoSetting, WebsiteSetting, Enquiry, Translation, AdminBase)
+├── app/Models/   (Admin, Banner, AboutPage, Service, Doctor, GalleryItem, Event, Testimonial, Offer, Blog, Faq, ContactDetail, SocialLink, SeoSetting, WebsiteSetting, Enquiry, UiTranslation)
+├── app/Helpers/I18n.php   (record-level + UI dictionary with cache & DB overrides)
+├── database/migrations/   (cms tables, translations JSON, ui_translations dictionary)
+├── resources/views/frontend/  (public pages + partials/header, partials/footer)
+├── resources/views/admin/     (all CRUD views + translations/)
+├── public/css/site.css + public/css/admin.css + public/js/site.js
 └── routes/web.php
 ```
 
-## Implemented (2026-01-07)
-- [x] MySQL schema for 16 CMS tables + admins + enquiries
-- [x] Public frontend: Home, About, Services (list/detail), Doctors (list/detail), Gallery, Events (list/detail), Testimonials, Offers (list/detail), Blogs (list/detail), Contact (with form submission)
-- [x] Dynamic header (nav, site logo/name, contact CTA) and footer (contact, socials, quick links, copyright)
-- [x] Sticky floating 24/7 Emergency call CTA
-- [x] Warm ivory + healing teal + saffron gold light theme, Fraunces + Manrope typography, no dark mode
-- [x] Admin panel with sidebar navigation for all 16 modules + enquiries
-- [x] Admin CRUD for Banners, Services, Doctors, Gallery, Events, Testimonials, Offers, Blogs, FAQs, Social Links, SEO Settings (edit only)
-- [x] Admin single-record edit for About page, Contact Details, Website Settings
-- [x] Admin Enquiries: list with search & status filter, view detail, update status + notes, delete
-- [x] Admin dashboard with real-time counters and latest enquiries
-- [x] File uploads (images) for banners, about, services, doctors, gallery, events, offers, blogs, SEO OG images, website logo & favicon
-- [x] Featured-doctor logic (only one doctor can be featured at a time)
-- [x] Automatic slug generation with uniqueness for Services, Doctors, Events, Offers, Blogs
-- [x] Session-based admin auth (custom `admin` guard, `App\Models\Admin`)
-- [x] TrustProxies configured for Emergent K8s ingress (HTTPS asset URLs work)
-- [x] Dummy seed data: 1 admin, 5 doctors, 6 services, 6 testimonials, 4 events, 4 offers, 3 blogs, 8 gallery, 5 FAQs, 4 socials, 10 SEO records
+## Iteration History
 
-## Test Results (Iteration 1)
-- Backend: 100% (36/36 pytest tests pass)
-- Frontend: 100% (Playwright UI walkthrough of public site, contact form, admin login, dashboard, doctors, enquiries all pass)
-- Light theme validated, admin auth working, contact→enquiry→admin pipeline verified end-to-end
+### v1 (2026-01-07)
+- MySQL schema for 16 CMS tables + admins + enquiries
+- Public frontend: Home, About, Services, Doctors, Gallery, Events, Testimonials, Offers, Blogs, Contact
+- Admin panel with CRUD for all modules + Enquiries management
+- Multi-language schema (`translations` JSON on each content model)
+- Backend 36/36, Frontend Playwright all pass.
 
-## Deferred / Backlog (P1)
-- Rich-text (WYSIWYG) editor for blog/service description bodies (currently raw HTML textarea)
-- Bulk import/export for gallery and testimonials via CSV
-- Google reCAPTCHA on public contact form for spam protection
-- Email notification to admin on new enquiry
-- Multi-language (Hindi / English toggle)
-- Image thumbnail generation for gallery
-
-## Deferred / Backlog (P2)
-- Doctor OPD schedule with day-wise time slots
-- Online appointment booking with slot availability
-- Patient portal (records, prescriptions)
-- Payment integration for online consultation
+### v2 (2026-01-09) — Design & i18n polish
+- **Responsive fix**: header condensed to 4 primary + More dropdown; hamburger up to 1023px; no overflow at any viewport (verified 1440/1200/1024/768/390).
+- **No green**: `--c-success` changed from #2f7a4d to burgundy #7a1f38; success alerts now use highlight-soft/primary; admin `--a-primary` moved from teal #0e5b56 to aubergine #3b1f4a. WhatsApp floating icon (background only) is the ONLY remaining green.
+- **Design polish**: fonts switched to **Fraunces** (variable serif, SOFT+opsz axes) + **Manrope**; new SVG logo mark replaces text-based fallback in header and footer.
+- **Header**: circular icon-only Call & Book buttons; compact EN/HI toggle; More dropdown with icon-prefixed sub-links; hamburger animates to X.
+- **New admin module**: Language Translations (EN/HI) — CRUD + search + Import Defaults (36 keys seeded); auto cache-flush on write.
+- Backend 45/45 (10 new tests), Frontend across 5 viewports — 100% pass, zero critical/minor issues.
 
 ## Test Credentials
 See `/app/memory/test_credentials.md`
+
+## Deferred / Backlog (P1)
+- Rich-text (WYSIWYG) editor for blog/service description bodies
+- Bulk import/export for gallery and testimonials via CSV
+- Google reCAPTCHA on public contact form
+- Email notification to admin on new enquiry
+- Image thumbnail generation for gallery
+
+## Deferred / Backlog (P2)
+- Doctor OPD schedule with day-wise slots
+- Online appointment booking with slot availability
+- Patient portal (records, prescriptions)
+- Payment integration for online consultation
