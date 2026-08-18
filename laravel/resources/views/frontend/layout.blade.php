@@ -22,7 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..800,0..100,0..1;1,9..144,300..800,0..100,0..1&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="{{ asset('css/site.css') }}?v=15">
+    <link rel="stylesheet" href="{{ asset('css/site.css') }}?v=17">
     @php
         $mhToRgb = function ($hex) {
             $hex = ltrim((string) $hex, '#');
@@ -69,12 +69,21 @@
 
     @include('frontend.partials.footer')
 
+    @include('frontend.partials.booking-modal')
+
+    @if(session('appointment_success'))
+        <div class="book-toast" data-book-toast data-testid="booking-toast">
+            <i class="fas fa-circle-check"></i>
+            <span>{{ session('appointment_success') }}</span>
+        </div>
+    @endif
+
     {{-- Mobile app-style bottom tab bar --}}
     @php $ap = request()->path(); @endphp
     <nav class="app-tabbar" data-testid="app-tabbar" aria-label="Mobile navigation">
         <a href="{{ url('/') }}" class="{{ $ap === '/' ? 'active' : '' }}" data-testid="tab-home"><i class="fas fa-house"></i><span class="lbl">Home</span></a>
         <a href="{{ route('services') }}" class="{{ str_starts_with($ap,'services') ? 'active' : '' }}" data-testid="tab-care"><i class="fas fa-hand-holding-medical"></i><span class="lbl">Care</span></a>
-        <a href="{{ route('contact') }}" class="tab-book" data-testid="tab-book"><span class="tab-book-btn"><i class="fas fa-calendar-check"></i></span><span class="lbl">Book</span></a>
+        <a href="{{ route('contact') }}" class="tab-book" data-book-open data-testid="tab-book"><span class="tab-book-btn"><i class="fas fa-calendar-check"></i></span><span class="lbl">Book</span></a>
         <a href="{{ route('doctors') }}" class="{{ str_starts_with($ap,'doctors') ? 'active' : '' }}" data-testid="tab-doctors"><i class="fas fa-user-doctor"></i><span class="lbl">Doctors</span></a>
         @if($siteContact?->phone_primary)
             <a href="tel:{{ $siteContact->phone_primary }}" data-testid="tab-call"><i class="fas fa-phone"></i><span class="lbl">Call</span></a>
@@ -96,7 +105,7 @@
     @endif
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
-    <script src="{{ asset('js/site.js') }}?v=11"></script>
+    <script src="{{ asset('js/site.js') }}?v=12"></script>
     @stack('scripts')
 </body>
 </html>

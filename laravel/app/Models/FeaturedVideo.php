@@ -14,4 +14,21 @@ class FeaturedVideo extends Model {
         }
         return null;
     }
+
+    // Instagram post/reel/tv shortcode
+    public function instagramShortcode(): ?string
+    {
+        if (preg_match('~instagram\.com/(?:[^/]+/)?(?:reel|reels|p|tv)/([A-Za-z0-9_-]+)~', (string) $this->url, $m)) {
+            return $m[1];
+        }
+        return null;
+    }
+
+    // Best-effort real thumbnail for an Instagram post (public CDN media endpoint).
+    // Front-end falls back to a branded glass card if this fails to load.
+    public function instagramThumb(): ?string
+    {
+        $code = $this->instagramShortcode();
+        return $code ? "https://www.instagram.com/p/{$code}/media/?size=l" : null;
+    }
 }

@@ -63,7 +63,7 @@
                         <i class="fas fa-phone" aria-hidden="true"></i>
                     </a>
                 @endif
-                <a href="{{ route('contact') }}" class="icon-btn icon-book" title="@t('cta.book')" data-testid="header-book-btn" aria-label="@t('cta.book')">
+                <a href="{{ route('contact') }}" class="icon-btn icon-book" data-book-open title="@t('cta.book')" data-testid="header-book-btn" aria-label="@t('cta.book')">
                     <i class="fas fa-calendar-check" aria-hidden="true"></i>
                 </a>
                 <button type="button" class="mobile-toggle" data-mobile-toggle aria-label="Menu" data-testid="mobile-menu-toggle">
@@ -87,7 +87,7 @@
                 @if($siteContact?->phone_primary)
                     <a href="tel:{{ $siteContact->phone_primary }}" class="btn-mh btn-outline-mh"><i class="fas fa-phone"></i> @t('cta.call')</a>
                 @endif
-                <a href="{{ route('contact') }}" class="btn-mh btn-primary-mh"><i class="fas fa-calendar-check"></i> @t('cta.book')</a>
+                <a href="{{ route('contact') }}" class="btn-mh btn-primary-mh" data-book-open><i class="fas fa-calendar-check"></i> @t('cta.book')</a>
             </div>
         </div>
     </div>

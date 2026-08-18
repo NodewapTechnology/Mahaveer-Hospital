@@ -1,0 +1,30 @@
+{
+  "summary": "Iteration 6 frontend verification (Mahaveer Hospital CMS). Focus: (1) booking popup modal open/close/E2E submit, (2) mobile bottom-nav Book opens the same modal, (3) modal layout (compact head, all 5 fields + submit visible without overflow) at desktop 1440x900 & mobile 390x844, (4) Instagram real-thumbnail with graceful branded fallback, (5) glass card treatment across all card families, (6) floating rounded glass mobile header + rounded pill app-tabbar. All 7 requested features PASS. No blocking or medium bugs found. Test enquiry created and cleaned up.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/test_reports/iteration_6.json"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Booking modal [data-testid=booking-modal] is hidden on page load (no 'open' class, not visible). Contains booking-modal-form with all 5 required fields (modal-name, modal-phone, modal-village, modal-doctor select with 5 seeded doctors + placeholder = 6 options, modal-date wrapped by Flatpickr with visible altInput). booking-modal-close button, Escape key, and overlay click all close the modal correctly on desktop.",
+    "Compact modal header shows only 'Book Your Appointment' + short helper 'We'll call to confirm within a few hours.' No 'QUICK BOOKING' eyebrow and no '24/7 EMERGENCY' pill leak into the modal body (both substrings absent from modal innerText). Full form + submit visible on 1440x900 (submit bottom y=536 within viewport 900) and on 390x844 (submit bottom y=576 within viewport 844) — no clipping/overflow.",
+    "End-to-end submit verified: opened modal via header-book-btn, filled name/phone/village, selected Dr. Amardeep, set preferred date 2027-05-15 via Flatpickr, clicked modal-submit. Enquiry #2 was created and visible in /admin/enquiries with Preferred Doctor = 'Dr. Amardeep' and Preferred Date = '15 May 2027 (Saturday)'. Test row deleted after verification.",
+    "Mobile tab-book ([data-testid=tab-book]) opens the same popup modal (open class applied, modal visible with all fields).",
+    "Instagram thumbnail: Home Watch&Follow card [data-testid=featured-instagram-6] renders <img src='https://www.instagram.com/p/C1abcdEfGhi/media/?size=l' onerror=\"this.style.display='none';this.parentNode.classList.add('ig-fallback');\"> — after network attempt the image errored (naturalWidth=0, complete=true), onerror fired, wrapper .ig-thumb got .ig-fallback class, and the branded Instagram glyph (.ig-glyph with fa-instagram) is shown on a branded background. No broken-image icon visible. YouTube card [data-testid=featured-youtube-5] renders real img.youtube.com/vi/<id>/hqdefault.jpg.",
+    "Glass cards confirmed: computed backgroundColor rgba(255,255,255,0.62) (alpha<1) and backdrop-filter 'blur(18px) saturate(1.5)' on .service-card, .doctor-card, .testimonial-card, .offer-card, .event-card and .card-mh. (.blog-card selector not currently rendered on home, but shares the same class rule in site.css.)",
+    "Floating rounded glass mobile header (390x844): .site-header has border-radius 22px on ALL four corners, background rgba(255,255,255,0.55), backdrop-filter 'saturate(1.8) blur(20px)', detached from edges (left=9.6, right=380.4 in 390 viewport, top=8.8) — floating pill confirmed.",
+    "Mobile app-tabbar [data-testid=app-tabbar] is a rounded floating pill: border-radius 26px, background rgba(255,255,255,0.72), backdrop-filter 'saturate(1.6) blur(14px)', detached with symmetric side margins.",
+    "Note: iteration_5's minor CSS-source-order bug on '.testi-hint' (mobile 'Swipe to read more' hint hidden) was NOT in the scope of this iteration and was not re-verified."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (Laravel monolith)", "frontend": "100% — 7/7 requested features fully verified"},
+  "test_credentials": "admin@mahaveerhospital.com / Admin@12345 — working",
+  "seed_data_creation": "Created 1 test enquiry (TEST_UI Modal User / 9998887771 / TESTVILLAGE_MODAL / Dr. Amardeep / 15-May-2027) via booking popup and deleted it after verification. No other seed data modified.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Preview URL: https://website-theme-1.preview.emergentagent.com. Booking popup modal is at data-testid=booking-modal with fields modal-name/phone/village/doctor(select)/date. The date field is wrapped by Flatpickr — the underlying <input data-testid=modal-date> has display:none once initialized; the visible input is data-testid=modal-date-visible. To set a date programmatically in Playwright use inp._flatpickr.setDate('YYYY-MM-DD', true). The submit form performs a full-page POST (no AJAX response event), so use redirected page URL / DOM state to assert success rather than page.expect_response. All 3 seeded featured_videos remain (Hospital Tour YT, Patient Story IG, Health Tip IG). Iteration_5's testi-hint CSS ordering bug likely still exists — not re-tested here.",
+  "rca of the issue": "No issues found in iteration_6 scope."
+}

@@ -336,8 +336,13 @@
                         </div>
                     </a>
                 @elseif($v->platform === 'instagram')
+                    @php $igThumb = $v->instagramThumb(); @endphp
                     <a href="{{ $v->url }}" target="_blank" rel="noopener" class="video-card ig" data-testid="featured-instagram-{{ $v->id }}">
-                        <div class="video-thumb ig-thumb">
+                        <div class="video-thumb ig-thumb {{ $igThumb ? '' : 'ig-fallback' }}">
+                            @if($igThumb)
+                                <img src="{{ $igThumb }}" alt="{{ $v->title ?: 'Instagram video' }}" loading="lazy" referrerpolicy="no-referrer"
+                                     onerror="this.style.display='none';this.parentNode.classList.add('ig-fallback');">
+                            @endif
                             <span class="ig-glyph"><i class="fab fa-instagram"></i></span>
                             <span class="video-play"><i class="fas fa-play"></i></span>
                             <span class="video-tag ig-tag"><i class="fab fa-instagram"></i> Instagram</span>

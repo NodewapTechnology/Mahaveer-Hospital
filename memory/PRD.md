@@ -104,3 +104,9 @@ Redesign (v4):
 - New dedicated admin menu **Video Links** (`featured_videos` table) supporting **multiple** Instagram + YouTube links; previews render on home ("Watch & Follow") and open the platform on click. (Moved out of Website Settings.)
 
 New/changed files: FeaturedVideo model + Admin\FeaturedVideoController + admin/videos views + routes; migrations 2026_01_12 (video cols on website_settings, now unused) & 2026_01_13 (featured_videos). Frontend: layout.blade.php (theme + tabbar + glass), home.blade.php (reorder + videos + doctor-grid/testi-grid), header.blade.php (lang removed). CSS: site.css v15 (white theme overrides), admin.css v8 (color picker + theme).
+
+### v5 (2026-06) — Booking popup + Glass UI + IG thumbnails (iteration_6 PASS)
+- **Booking popup modal**: header Book icon, mobile bottom-nav Book, mobile menu Book all open a glass popup with the full appointment form (name/phone/village/doctor/date). Submits -> enquiry + success toast. File: resources/views/frontend/partials/booking-modal.blade.php; JS in site.js (v12); CSS in site.css (v17). Popup header trimmed (no eyebrow/pill) so form fits + scrolls.
+- **Glass cards everywhere**: translucent frosted (backdrop-blur) + premium shadow on all card families.
+- **Floating rounded glass mobile header** + rounded pill bottom app-tabbar.
+- **Instagram real thumbnails**: FeaturedVideo::instagramThumb() uses public /p/{code}/media endpoint with server-side + onerror branded glass fallback (no broken images). YouTube uses img.youtube.com thumb.

@@ -79,4 +79,30 @@
     // CSRF for fetch
     const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
     if (csrf) window._csrf = csrf;
+
+    // Booking modal popup
+    const bookModal = document.querySelector('[data-book-modal]');
+    if (bookModal) {
+        const openModal = (e) => {
+            if (e) e.preventDefault();
+            bookModal.classList.add('open');
+            bookModal.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('modal-open');
+        };
+        const closeModal = () => {
+            bookModal.classList.remove('open');
+            bookModal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('modal-open');
+        };
+        document.querySelectorAll('[data-book-open]').forEach(btn => btn.addEventListener('click', openModal));
+        bookModal.querySelectorAll('[data-book-close]').forEach(el => el.addEventListener('click', closeModal));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+    }
+
+    // Success toast auto-hide
+    const toast = document.querySelector('[data-book-toast]');
+    if (toast) {
+        setTimeout(() => toast.classList.add('show'), 100);
+        setTimeout(() => toast.classList.remove('show'), 6000);
+    }
 })();
