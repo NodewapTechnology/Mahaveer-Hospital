@@ -455,3 +455,23 @@ textarea.form-control, textarea.form-control-adm { min-height: 110px; resize: ve
 /* Sidebar footer helper */
 .admin-sidebar { display: flex; flex-direction: column; }
 .admin-sidebar > nav { flex: 1; }
+
+/* Color picker field (Website Settings) */
+.color-field { display: flex; align-items: center; gap: .6rem; }
+.color-field input[type="color"].color-swatch {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 54px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--a-line, #d9d3ea);
+    border-radius: 10px;
+    background: transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+.color-field input[type="color"].color-swatch::-webkit-color-swatch-wrapper { padding: 4px; }
+.color-field input[type="color"].color-swatch::-webkit-color-swatch { border: 0; border-radius: 6px; }
+.color-field input[type="color"].color-swatch::-moz-color-swatch { border: 0; border-radius: 6px; }
+.color-field .color-hex { flex: 1; font-family: 'JetBrains Mono', ui-monospace, monospace; text-transform: uppercase; }

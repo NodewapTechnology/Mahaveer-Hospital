@@ -1,7 +1,7 @@
 # Test Credentials — Mahaveer Hospital CMS
 
 ## Admin Panel
-- **URL**: https://c8ed9e64-033a-470d-91f8-3410b04bb799.preview.emergentagent.com/admin/login
+- **URL**: https://website-theme-1.preview.emergentagent.com/admin/login
 - **Email**: `admin@mahaveerhospital.com`
 - **Password**: `Admin@12345`
 

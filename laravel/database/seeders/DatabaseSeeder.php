@@ -40,8 +40,8 @@ class DatabaseSeeder extends Seeder
             'footer_text' => 'Compassionate care rooted in North Bihar — advanced medicine, unmatched hospitality.',
             'copyright_text' => '© ' . date('Y') . ' Mahaveer Multi-Speciality Hospital. All rights reserved.',
             'appointment_cta_label' => 'Book Appointment',
-            'primary_color' => '#0f766e',
-            'accent_color' => '#c48b2e',
+            'primary_color' => '#3b1f4a',
+            'accent_color' => '#d64a3a',
         ]);
 
         // ---------------------- Contact -----------------------

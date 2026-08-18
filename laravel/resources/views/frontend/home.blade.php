@@ -93,11 +93,16 @@
                                     <input type="text" id="appt-village" name="village" required placeholder="Village name" value="{{ old('village') }}" data-testid="appt-village">
                                 </div>
                             </div>
-                            <div class="field-group {{ $errors->has('district') ? 'has-error' : '' }}">
-                                <label for="appt-district">District <span class="req">*</span></label>
-                                <div class="input-wrap">
-                                    <i class="fas fa-map-location-dot"></i>
-                                    <input type="text" id="appt-district" name="district" required placeholder="District" value="{{ old('district') }}" data-testid="appt-district">
+                            <div class="field-group {{ $errors->has('preferred_doctor') ? 'has-error' : '' }}">
+                                <label for="appt-doctor">Doctor <span class="req">*</span></label>
+                                <div class="input-wrap select-wrap">
+                                    <i class="fas fa-user-doctor"></i>
+                                    <select id="appt-doctor" name="preferred_doctor" required data-testid="appt-doctor">
+                                        <option value="" disabled {{ old('preferred_doctor') ? '' : 'selected' }}>Select doctor</option>
+                                        @foreach($appointmentDoctors as $ad)
+                                            <option value="{{ $ad->name }}" {{ old('preferred_doctor') === $ad->name ? 'selected' : '' }}>{{ $ad->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -212,6 +217,34 @@
 </section>
 @endif
 
+{{-- TESTIMONIALS (before doctors) --}}
+@if($testimonials->count())
+<section class="section tinted" data-testid="testimonials-section">
+    <div class="container-x">
+        <div class="section-head reveal">
+            <span class="overline">Patient Stories</span>
+            <h2 style="margin-top:1rem;">Real voices from the families we care for.</h2>
+        </div>
+        <div class="grid-3 testi-grid" data-testid="testimonials-slider">
+            @foreach($testimonials->take(6) as $t)
+                <div class="testimonial-card reveal" data-testid="testimonial-{{ $t->id }}">
+                    <div class="quote-mark"><i class="fas fa-quote-left"></i></div>
+                    <div class="stars">
+                        @for($i = 0; $i < ($t->rating ?? 5); $i++)<i class="fas fa-star"></i>@endfor
+                    </div>
+                    <blockquote>"{{ $t->quote }}"</blockquote>
+                    <div class="author">
+                        <div class="name">{{ $t->name }}</div>
+                        <div class="role">{{ $t->role }}</div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+        <div class="testi-hint"><i class="fas fa-arrow-left"></i> Swipe to read more <i class="fas fa-arrow-right"></i></div>
+    </div>
+</section>
+@endif
+
 {{-- DOCTORS --}}
 <section class="section" data-testid="doctors-section">
     <div class="container-x">
@@ -233,7 +266,7 @@
                     <div class="role">{{ $featuredDoctor->designation }}</div>
                     <h3 class="name">{{ $featuredDoctor->name }}</h3>
                     <span class="credentials"><i class="fas fa-graduation-cap" style="color:var(--c-accent);"></i> {{ $featuredDoctor->qualification }}</span>
-                    <p>{{ $featuredDoctor->description }}</p>
+                    <div class="featured-doc-bio">{!! $featuredDoctor->description !!}</div>
                     <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.5rem;">
                         <a href="{{ route('doctors.show', $featuredDoctor->slug) }}" class="btn-mh btn-primary-mh" data-testid="featured-doctor-view">
                             View Profile <i class="fas fa-arrow-right" style="font-size:.75rem;"></i>
@@ -247,7 +280,7 @@
         @endif
 
         @if($doctors->count())
-            <div class="grid-4 reveal" style="margin-top:2.5rem;">
+            <div class="grid-4 doctor-grid reveal" style="margin-top:2.5rem;">
                 @foreach($doctors as $d)
                     <div class="doctor-card" data-testid="doctor-card-{{ $d->slug }}">
                         <div class="photo-wrap">
@@ -278,6 +311,49 @@
     </div>
 </section>
 
+{{-- FEATURED VIDEOS --}}
+@if($featuredVideos->count())
+<section class="section tinted" data-testid="featured-videos-section">
+    <div class="container-x">
+        <div class="section-head reveal">
+            <span class="overline">Watch &amp; Follow</span>
+            <h2 style="margin-top:1rem;">See Mahaveer Hospital in action.</h2>
+            <p>Get a closer look at our facilities, patient stories and health tips on our social channels.</p>
+        </div>
+        <div class="video-grid reveal">
+            @foreach($featuredVideos as $v)
+                @php $ytId = $v->platform === 'youtube' ? $v->youtubeId() : null; @endphp
+                @if($v->platform === 'youtube' && $ytId)
+                    <a href="{{ $v->url }}" target="_blank" rel="noopener" class="video-card yt" data-testid="featured-youtube-{{ $v->id }}">
+                        <div class="video-thumb">
+                            <img src="https://img.youtube.com/vi/{{ $ytId }}/hqdefault.jpg" alt="{{ $v->title ?: 'YouTube video' }}" loading="lazy">
+                            <span class="video-play"><i class="fas fa-play"></i></span>
+                            <span class="video-tag"><i class="fab fa-youtube"></i> YouTube</span>
+                        </div>
+                        <div class="video-meta">
+                            <span class="video-title"><i class="fab fa-youtube"></i> {{ $v->title ?: 'Watch on YouTube' }}</span>
+                            <i class="fas fa-arrow-up-right-from-square"></i>
+                        </div>
+                    </a>
+                @elseif($v->platform === 'instagram')
+                    <a href="{{ $v->url }}" target="_blank" rel="noopener" class="video-card ig" data-testid="featured-instagram-{{ $v->id }}">
+                        <div class="video-thumb ig-thumb">
+                            <span class="ig-glyph"><i class="fab fa-instagram"></i></span>
+                            <span class="video-play"><i class="fas fa-play"></i></span>
+                            <span class="video-tag ig-tag"><i class="fab fa-instagram"></i> Instagram</span>
+                        </div>
+                        <div class="video-meta">
+                            <span class="video-title"><i class="fab fa-instagram"></i> {{ $v->title ?: 'Watch on Instagram' }}</span>
+                            <i class="fas fa-arrow-up-right-from-square"></i>
+                        </div>
+                    </a>
+                @endif
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
 {{-- OFFERS PREVIEW --}}
 @if($offers->count())
 <section class="section tinted" data-testid="offers-section">
@@ -297,33 +373,6 @@
                         View Details <i class="fas fa-arrow-right" style="font-size:.7rem;"></i>
                     </div>
                 </a>
-            @endforeach
-        </div>
-    </div>
-</section>
-@endif
-
-{{-- TESTIMONIALS --}}
-@if($testimonials->count())
-<section class="section" data-testid="testimonials-section">
-    <div class="container-x">
-        <div class="section-head reveal">
-            <span class="overline">Patient Stories</span>
-            <h2 style="margin-top:1rem;">Real voices from the families we care for.</h2>
-        </div>
-        <div class="grid-3">
-            @foreach($testimonials->take(6) as $t)
-                <div class="testimonial-card reveal" data-testid="testimonial-{{ $t->id }}">
-                    <div class="quote-mark"><i class="fas fa-quote-left"></i></div>
-                    <div class="stars">
-                        @for($i = 0; $i < ($t->rating ?? 5); $i++)<i class="fas fa-star"></i>@endfor
-                    </div>
-                    <blockquote>"{{ $t->quote }}"</blockquote>
-                    <div class="author">
-                        <div class="name">{{ $t->name }}</div>
-                        <div class="role">{{ $t->role }}</div>
-                    </div>
-                </div>
             @endforeach
         </div>
     </div>

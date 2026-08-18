@@ -36,7 +36,7 @@
                 altInput: true,
                 altFormat: 'D, d M Y',
                 minDate: 'today',
-                disableMobile: false,
+                disableMobile: true,
                 monthSelectorType: 'static',
                 animate: true,
                 allowInput: false,

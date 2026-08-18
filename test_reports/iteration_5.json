@@ -1,0 +1,47 @@
+{
+  "summary": "Frontend E2E verification of iteration_5 requirements (premium white theme, no gradients, section reorder, Video Links CRUD, admin theme sync, mobile app-like UX). 10 of 11 requirements PASS fully; 1 minor CSS ordering bug found (swipe hint hidden on mobile) and 1 cosmetic data-testid naming mismatch on the 'Care' tab. All admin flows, theme propagation to both public + admin CSS vars, and Featured Videos CRUD → home rendering verified. Settings restored to defaults; test data cleaned up.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Testimonials mobile slider hint",
+        "issue": "The 'Swipe to read more' hint (.testi-hint) is NOT visible on mobile (390x844). Root cause: in /app/laravel/public/css/site.css the rule '.testi-hint { display: none; }' at line 1907 sits AFTER the @media(max-width:767px){ .testi-hint{display:flex} } block at lines 1877-1906, so with equal specificity the later rule wins and overrides the mobile override. Fix: move the default '.testi-hint { display: none; }' declaration ABOVE the @media block (or add !important, or wrap the default in @media(min-width:768px)).",
+        "selector": ".testi-hint",
+        "priority": "MINOR"
+      },
+      {
+        "component": "Mobile bottom tabbar 'Care' tab",
+        "issue": "Spec requested data-testid='tab-care' for the Care tab, but layout.blade.php line 76 uses data-testid='tab-services'. The tab label is 'Care' and it correctly navigates to /services, only the testid name differs from spec.",
+        "selector": "[data-testid=tab-services]",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/test_reports/iteration_5.json"],
+  "action_items": [
+    "Move '.testi-hint { display: none; }' in /app/laravel/public/css/site.css to BEFORE the @media(max-width:767px) block (or change to display:none only when min-width:768px) so the mobile 'Swipe to read more' hint becomes visible on <768px.",
+    "(Optional/cosmetic) Rename data-testid='tab-services' -> 'tab-care' on the Care tab anchor in resources/views/frontend/layout.blade.php to match spec naming."
+  ],
+  "critical_code_review_comments": [
+    "Section order: [data-testid=testimonials-section] correctly precedes [data-testid=doctors-section] in DOM (compareDocumentPosition confirms).",
+    "Header: no EN/HI [data-testid=lang-toggle] element found on public site.",
+    "Public home CSS custom properties resolve to --c-primary:#3b1f4a and --c-accent:#d64a3a (defaults). After admin change to #0b5fff, home <style> updated to --c-primary:#0b5fff AND admin layout injects --a-primary:#0b5fff — both public + admin theme sync verified. Restored to #3b1f4a/#d64a3a after test.",
+    "Body background is rgb(255,255,255) — premium white theme confirmed. Computed background-image on .hero, .doctor-card, .cta-band, .emergency-strip all report 'none' — no gradients present as required.",
+    "Cards have visible box-shadow via site.css lines 1864-1869 (var(--shadow-1) applied to .card-mh/.service-card/.doctor-card/.testimonial-card/.offer-card/.event-card/.blog-card/.doctor-featured/.hero-appt-card/.contact-wrap).",
+    "Mobile (390x844): [data-testid=app-tabbar] visible, tabs tab-home, tab-book (raised circular, border-radius 50%, bg rgb(214,74,58)=accent), tab-doctors, tab-call all present and navigable. tab-services (label 'Care') present but testid does not match spec 'tab-care'.",
+    "Mobile doctors grid: .doctor-grid computed gridTemplateColumns='354.812px' (single column) — 1 card per row confirmed across 4 doctor cards.",
+    "Mobile testimonials: [data-testid=testimonials-slider] renders with display:flex, overflow-x:auto (scroll-snap carousel). Desktop 1440: same element renders as display:grid with 3 columns of 378px — grid on desktop / slider on mobile working. BUT the 'Swipe to read more' hint stays hidden on mobile due to CSS source-order bug described above.",
+    "Video Links admin: [data-testid=admin-nav-video-links] exists in sidebar under Settings. Website Settings page no longer contains any youtube/instagram field (verified by name*=youtube / name*=instagram queries returning null). CRUD: created platform=instagram + url=https://www.instagram.com/reel/TEST_IG_1787067025/, title=TEST_UI Video → row appears in list → public home /featured-videos-section shows [data-testid^=featured-instagram-] href matching. Then deleted successfully. YouTube link https://www.youtube.com/watch?v=dQw4w9WgXcQ renders as [data-testid^=featured-youtube-].",
+    "Regression: hero appointment form still has [data-testid=appt-doctor] and [data-testid=appt-date-visible]; date field is visible on 390x844 mobile (bounding box 43.6, 1181, 302.8x50). Featured doctor bio contains no literal '<p>' text (HTML rendered). No 'Translations' item in admin sidebar. Admin enquiry list still has no Source column (per iteration_4 verification, unchanged this iteration)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (Laravel monolith, not tested this iteration)", "frontend": "≈95% — 10/11 requested checks fully pass; 1 minor CSS bug (swipe hint) + 1 cosmetic testid naming."},
+  "test_credentials": "admin@mahaveerhospital.com / Admin@12345 — working",
+  "seed_data_creation": "Temporarily created Instagram video row 'TEST_UI Video' (url TEST_IG_1787067025) via /admin/videos/create — verified rendering on home — then deleted. Primary color mutated to #0b5fff then restored to #3b1f4a; accent restored to #d64a3a. Final Video Links table has 3 seeded rows only (Hospital Tour YT, Patient Story IG, Health Tip IG).",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Preview URL: https://website-theme-1.preview.emergentagent.com. Preserve seeded 3 video links. Admin website-settings has TWO forms on the page — target the settings form's Save via 'form:has([data-testid=ws-primary-color]) button[type=submit]' (per iteration_4 gotcha) to avoid triggering logout form. The mobile 'swipe hint' CSS ordering bug is the only remaining functional issue in iteration_5 scope.",
+  "rca of the issue": "Mobile swipe hint hidden: in site.css the declaration '.testi-hint { display: none; }' (line 1907) is placed AFTER the @media(max-width:767px){ .testi-hint { display:flex; ... } } block. Both selectors have identical specificity (single class), so the later declaration in source order wins across ALL viewports — including mobile — nullifying the intended override. Fix by relocating the default hide rule above the media query, or scoping it under @media(min-width:768px)."
+}

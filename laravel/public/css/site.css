@@ -154,10 +154,11 @@ p:last-child { margin-bottom: 0; }
     position: sticky;
     top: 0;
     z-index: 60;
-    background: rgba(251,246,239,.92);
-    backdrop-filter: saturate(180%) blur(14px);
-    -webkit-backdrop-filter: saturate(180%) blur(14px);
-    border-bottom: 1px solid var(--c-line-soft);
+    background: rgba(255,255,255,.65);
+    backdrop-filter: saturate(180%) blur(22px);
+    -webkit-backdrop-filter: saturate(180%) blur(22px);
+    border-bottom: 1px solid rgba(255,255,255,.55);
+    box-shadow: 0 6px 24px rgba(20,20,40,.06);
 }
 .site-header .header-row {
     display: flex;
@@ -1677,3 +1678,303 @@ textarea.form-control-mh { min-height: 130px; resize: vertical; }
     outline-offset: 1px;
 }
 
+
+/* ===============================================================
+   Appointment doctor select (hero form)
+   =============================================================== */
+.hero-appt-form .select-wrap select {
+    width: 100%;
+    padding: .78rem 2.2rem .78rem 2.55rem;
+    border: 0;
+    background: transparent;
+    color: var(--c-ink);
+    font: inherit;
+    font-size: .95rem;
+    font-weight: 500;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+.hero-appt-form .select-wrap { position: relative; }
+.hero-appt-form .select-wrap::after {
+    content: "\f078";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--c-muted);
+    font-size: .7rem;
+    pointer-events: none;
+    z-index: 1;
+}
+.hero-appt-form .select-wrap select:invalid { color: var(--c-muted); font-weight: 400; }
+
+/* Featured doctor bio (renders HTML from admin) */
+.featured-doc-bio { margin-top: 1.15rem; }
+.featured-doc-bio p { margin: 0 0 .8rem; }
+.featured-doc-bio p:last-child { margin-bottom: 0; }
+.featured-doc-bio ul, .featured-doc-bio ol { margin: .5rem 0 .8rem 1.1rem; }
+
+/* ===============================================================
+   Featured videos (YouTube + Instagram)
+   =============================================================== */
+.video-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: 920px;
+}
+@media (min-width: 768px) { .video-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; } }
+.video-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--c-paper);
+    border: 1px solid var(--c-line-soft);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform .3s, box-shadow .3s;
+}
+.video-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-2); color: inherit; }
+.video-thumb {
+    position: relative;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background: #000;
+}
+.video-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+.video-card:hover .video-thumb img { transform: scale(1.06); }
+.video-play {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.92);
+    color: var(--c-accent);
+    display: grid; place-items: center;
+    font-size: 1.35rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    transition: transform .3s, background .3s, color .3s;
+}
+.video-card:hover .video-play { transform: scale(1.1); background: #fff; }
+.video-card.yt .video-play { color: #ff0000; }
+.video-tag {
+    position: absolute;
+    top: 12px; left: 12px;
+    background: rgba(0,0,0,.65);
+    color: #fff;
+    padding: .35rem .8rem;
+    border-radius: var(--r-pill);
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    backdrop-filter: blur(4px);
+}
+.ig-thumb {
+    background: linear-gradient(135deg, #405de6, #833ab4 35%, #c13584 60%, #e1306c 78%, #fd1d1d 92%, #fcb045);
+}
+.ig-glyph {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: rgba(255,255,255,.9);
+    font-size: 4.5rem;
+    opacity: .5;
+}
+.video-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    padding: 1.1rem 1.3rem;
+}
+.video-title {
+    font-family: var(--f-display);
+    font-size: 1.1rem;
+    color: var(--c-ink);
+    display: inline-flex;
+    align-items: center;
+    gap: .55rem;
+}
+.video-card.yt .video-title i { color: #ff0000; }
+.video-card.ig .video-title i { color: #c13584; }
+.video-meta > i { color: var(--c-muted); font-size: .85rem; transition: color .2s, transform .2s; }
+.video-card:hover .video-meta > i { color: var(--c-accent); transform: translate(2px, -2px); }
+
+/* ================================================================
+   PREMIUM WHITE THEME · NO GRADIENTS · APP-LIKE MOBILE  (v14 overrides)
+   All brand colour derives from admin Primary + Accent.
+   ================================================================ */
+:root {
+    --c-cream:   #ffffff;   /* page background — premium white */
+    --c-cream-2: #f5f6f9;   /* tinted sections — soft neutral */
+    --c-sand:    #e9ecf1;
+    --c-line:    #e6e8ef;
+    --c-line-soft: #eef0f5;
+    --c-paper:   #ffffff;
+
+    /* Premium layered shadows */
+    --shadow-1: 0 2px 10px rgba(20,20,40,0.06), 0 8px 24px rgba(20,20,40,0.05);
+    --shadow-2: 0 10px 30px rgba(20,20,40,0.10), 0 20px 48px rgba(20,20,40,0.07);
+    --shadow-3: 0 18px 50px rgba(20,20,40,0.14), 0 30px 80px rgba(20,20,40,0.10);
+}
+
+body.frontend-body { background: var(--c-cream); }
+.hero { background: var(--c-cream); }
+.section.tinted { background: var(--c-cream-2); }
+.page-hero { background: var(--c-cream-2); }
+
+/* ---- Kill ALL decorative gradient glows ---- */
+.hero::before, .hero::after,
+.hero-appt-card::before, .hero-appt-card::after,
+.offer-card::after,
+.page-hero::before,
+.contact-info::after,
+.site-footer::before,
+.emergency-strip::before,
+.cta-band::before, .cta-band .cta-glow {
+    background: none !important;
+    display: none !important;
+}
+
+/* ---- Replace functional gradients with solid brand colour ---- */
+.hero-appt-head .mini-icon { background: var(--c-primary) !important; box-shadow: var(--shadow-1) !important; }
+.hero-appt-form .date-wrap { background: var(--c-paper) !important; border-color: var(--c-line) !important; }
+.hero-appt-form .date-wrap i { color: var(--c-accent) !important; }
+.hero-appt-form .hero-appt-submit { background: var(--c-accent) !important; box-shadow: var(--shadow-1) !important; }
+.hero-appt-form .hero-appt-submit:hover { background: var(--c-accent-2) !important; box-shadow: var(--shadow-2) !important; }
+.service-card::before { background: var(--c-accent) !important; }
+.doctor-featured .photo { background: var(--c-primary) !important; }
+.doctor-card .photo-wrap { background: var(--c-primary) !important; }
+.emergency-strip { background: var(--c-primary) !important; }
+.ig-thumb { background: var(--c-primary) !important; }
+
+/* ---- CTA band ("Ready when you are") — solid primary from admin ---- */
+.cta-band { background: var(--c-primary) !important; }
+
+/* ---- Premium cards: always-on soft shadow ---- */
+.card-mh, .service-card, .doctor-card, .testimonial-card,
+.offer-card, .event-card, .blog-card, .doctor-featured,
+.hero-appt-card, .contact-wrap {
+    box-shadow: var(--shadow-1);
+    border-color: var(--c-line-soft);
+}
+.card-mh:hover, .service-card:hover, .doctor-card:hover,
+.testimonial-card:hover, .offer-card:hover, .event-card:hover,
+.blog-card:hover { box-shadow: var(--shadow-3); }
+
+/* ===============================================================
+   TESTIMONIALS — mobile slider (scroll-snap carousel)
+   =============================================================== */
+@media (max-width: 767px) {
+    .testi-grid {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding: .25rem .25rem 1rem;
+        margin: 0 -1.1rem;
+        padding-left: 1.1rem;
+        padding-right: 1.1rem;
+        scrollbar-width: none;
+    }
+    .testi-grid::-webkit-scrollbar { display: none; }
+    .testi-grid > .testimonial-card {
+        flex: 0 0 86%;
+        scroll-snap-align: center;
+    }
+    .testi-hint {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: .4rem;
+        font-size: .72rem;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--c-muted);
+        margin-top: .25rem;
+    }
+}
+@media (min-width: 768px) {
+    .testi-hint { display: none; }
+}
+
+/* ===============================================================
+   DOCTORS — one card per row on mobile
+   =============================================================== */
+@media (max-width: 639px) {
+    .doctor-grid { grid-template-columns: 1fr !important; gap: 1.25rem !important; }
+    .doctor-card .photo-wrap { aspect-ratio: 16/10; }
+}
+
+/* ===============================================================
+   MOBILE APP-LIKE POLISH + bottom tab bar
+   =============================================================== */
+.app-tabbar { display: none; }
+@media (max-width: 1023px) {
+    body.frontend-body { padding-bottom: 74px; }
+    .app-tabbar {
+        display: flex;
+        position: fixed;
+        left: 0; right: 0; bottom: 0;
+        z-index: 80;
+        background: rgba(255,255,255,.96);
+        backdrop-filter: saturate(160%) blur(14px);
+        -webkit-backdrop-filter: saturate(160%) blur(14px);
+        border-top: 1px solid var(--c-line-soft);
+        padding: .4rem .4rem calc(.4rem + env(safe-area-inset-bottom));
+        box-shadow: 0 -8px 30px rgba(20,20,40,.08);
+        justify-content: space-around;
+        align-items: flex-end;
+    }
+    .app-tabbar a {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        text-decoration: none;
+        color: var(--c-muted);
+        font-size: .62rem;
+        font-weight: 700;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+        padding: .35rem 0;
+        transition: color .2s;
+    }
+    .app-tabbar a i { font-size: 1.15rem; }
+    .app-tabbar a.active { color: var(--c-accent); }
+    .app-tabbar a.tab-book {
+        color: #fff;
+    }
+    .app-tabbar a.tab-book .tab-book-btn {
+        width: 54px; height: 54px;
+        border-radius: 50%;
+        background: var(--c-accent);
+        color: #fff;
+        display: grid; place-items: center;
+        font-size: 1.35rem;
+        margin-top: -26px;
+        box-shadow: 0 8px 22px rgba(20,20,40,.22);
+        border: 4px solid #fff;
+    }
+    .app-tabbar a.tab-book span.lbl { color: var(--c-accent); margin-top: 1px; }
+
+    /* Float buttons don't clash with tab bar */
+    .floating-em { display: none !important; }
+    .floating-wa { bottom: 86px !important; right: 14px !important; }
+
+    /* App-like larger radii + snappier cards */
+    .service-card, .doctor-card, .offer-card, .event-card,
+    .blog-card, .testimonial-card, .hero-appt-card { border-radius: 20px; }
+}

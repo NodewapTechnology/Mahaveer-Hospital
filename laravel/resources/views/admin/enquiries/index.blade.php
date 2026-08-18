@@ -25,7 +25,7 @@
     <div class="card-header">
         <div>
             <h2>All Enquiries <span class="text-muted" style="font-size:.9rem;font-weight:500;">({{ $items->total() }})</span></h2>
-            <p class="text-muted" style="margin:.2rem 0 0;font-size:.85rem;">Search &amp; filter by appointment date, source or status.</p>
+            <p class="text-muted" style="margin:.2rem 0 0;font-size:.85rem;">Search &amp; filter by appointment date or status.</p>
         </div>
     </div>
 
@@ -88,7 +88,6 @@
                     <th>Phone</th>
                     <th>Location</th>
                     <th>Appointment&nbsp;Date</th>
-                    <th>Source</th>
                     <th>Status</th>
                     <th>Received</th>
                     <th></th>
@@ -120,13 +119,6 @@
                             @endif
                         </td>
                         <td>
-                            @if($e->source === 'hero_form')
-                                <span class="badge badge-info"><i class="fas fa-star"></i> Online</span>
-                            @else
-                                <span class="badge badge-muted">{{ $e->source }}</span>
-                            @endif
-                        </td>
-                        <td>
                             @php $b = ['new' => 'warning', 'in_progress' => 'info', 'resolved' => 'success', 'closed' => 'muted'][$e->status] ?? 'muted'; @endphp
                             <span class="badge badge-{{ $b }}">{{ ucwords(str_replace('_', ' ', $e->status)) }}</span>
                         </td>
@@ -137,7 +129,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="8" style="text-align:center;padding:3rem 1.5rem;color:var(--a-muted);">
+                    <tr><td colspan="7" style="text-align:center;padding:3rem 1.5rem;color:var(--a-muted);">
                         <i class="fas fa-inbox" style="font-size:2rem;opacity:.4;"></i>
                         <div style="margin-top:.6rem;font-weight:600;">No enquiries match your filters</div>
                         <div style="font-size:.86rem;">Try clearing the date/status filter or searching a different term.</div>

@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\ContactDetailController;
 use App\Http\Controllers\Admin\SocialLinkController;
 use App\Http\Controllers\Admin\SeoSettingController;
 use App\Http\Controllers\Admin\WebsiteSettingController;
+use App\Http\Controllers\Admin\FeaturedVideoController;
 use App\Http\Controllers\Admin\EnquiryController;
 use App\Http\Controllers\Admin\TranslationController;
 
@@ -81,6 +82,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('seo-settings', SeoSettingController::class)->except(['show', 'create', 'store']);
         Route::get('website-settings', [WebsiteSettingController::class, 'edit'])->name('website-settings.edit');
         Route::put('website-settings', [WebsiteSettingController::class, 'update'])->name('website-settings.update');
+
+        Route::get('videos', [FeaturedVideoController::class, 'index'])->name('videos.index');
+        Route::get('videos/create', [FeaturedVideoController::class, 'create'])->name('videos.create');
+        Route::post('videos', [FeaturedVideoController::class, 'store'])->name('videos.store');
+        Route::get('videos/{video}/edit', [FeaturedVideoController::class, 'edit'])->name('videos.edit');
+        Route::put('videos/{video}', [FeaturedVideoController::class, 'update'])->name('videos.update');
+        Route::delete('videos/{video}', [FeaturedVideoController::class, 'destroy'])->name('videos.destroy');
         Route::get('enquiries', [EnquiryController::class, 'index'])->name('enquiries.index');
         Route::get('enquiries/{enquiry}', [EnquiryController::class, 'show'])->name('enquiries.show');
         Route::put('enquiries/{enquiry}', [EnquiryController::class, 'update'])->name('enquiries.update');

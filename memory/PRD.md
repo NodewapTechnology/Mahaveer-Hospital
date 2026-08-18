@@ -83,3 +83,24 @@ See `/app/memory/test_credentials.md`
 - **TinyMCE 6.8.3** via jsdelivr CDN (no API key required, community license)
 - **Google reCAPTCHA v3** (optional, admin-configurable via Website Settings)
 - **Laravel Mail** (currently `log` driver; production: swap to SMTP/Postmark/SES in .env)
+
+### v4 (2026-06) — Bug-fix batch + Premium white redesign
+**Environment note:** Container had been reset (PHP 8.2, Composer, MariaDB were reinstalled; DB `mahaveer_cms` re-created + migrated + seeded; `mariadb` re-added to supervisor via /etc/supervisor/conf.d/mariadb.conf; Laravel `.env` recreated).
+
+Fixes (all verified, iteration_4 + iteration_5 PASS):
+- Hero appointment form: Preferred Date now works on mobile (flatpickr disableMobile:true); **District field replaced with a dynamic Doctor <select>** populated from admin doctors (name `preferred_doctor`).
+- Featured doctor bio renders HTML via `{!! !!}` (no more literal <p> tags).
+- Removed **Source** from admin enquiry detail + list; removed **Translations (EN/HI)** admin menu; removed **EN/HI language toggle** from front-end header.
+- Website Settings **colour pickers** fixed (swatch + hex) and now applied **site-wide** via CSS-var injection in layout (`--c-primary/--c-accent/--c-highlight`). Admin dashboard also re-themed via `--a-*` injection.
+- Admin-uploaded **logo & favicon** apply across site (favicon cache-busted by updated_at).
+
+Redesign (v4):
+- **Premium WHITE theme**, **no gradients** anywhere (solid brand colours), **premium card shadows**.
+- **Testimonials moved BEFORE Doctors**; testimonials become a **horizontal swipe slider on mobile**.
+- **Doctors: 1 card per row on mobile**.
+- **Mobile app-like UX**: fixed bottom tab bar (Home/Care/Book/Doctors/Call), larger radii, app feel.
+- **CTA band** ("Ready when you are") now solid primary colour from admin.
+- **White glass-morphism header** (translucent white + backdrop blur).
+- New dedicated admin menu **Video Links** (`featured_videos` table) supporting **multiple** Instagram + YouTube links; previews render on home ("Watch & Follow") and open the platform on click. (Moved out of Website Settings.)
+
+New/changed files: FeaturedVideo model + Admin\FeaturedVideoController + admin/videos views + routes; migrations 2026_01_12 (video cols on website_settings, now unused) & 2026_01_13 (featured_videos). Frontend: layout.blade.php (theme + tabbar + glass), home.blade.php (reorder + videos + doctor-grid/testi-grid), header.blade.php (lang removed). CSS: site.css v15 (white theme overrides), admin.css v8 (color picker + theme).

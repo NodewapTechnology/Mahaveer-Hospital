@@ -14,9 +14,24 @@
         <div class="form-group"><label>Copyright Text</label><input class="form-control" name="copyright_text" value="{{ old('copyright_text', $item->copyright_text) }}"></div>
         <div class="form-group"><label>Appointment CTA Label</label><input class="form-control" name="appointment_cta_label" value="{{ old('appointment_cta_label', $item->appointment_cta_label) }}"></div>
         <div class="form-row">
-            <div class="form-group"><label>Primary Color</label><input type="color" class="form-control" name="primary_color" value="{{ old('primary_color', $item->primary_color) }}"></div>
-            <div class="form-group"><label>Accent Color</label><input type="color" class="form-control" name="accent_color" value="{{ old('accent_color', $item->accent_color) }}"></div>
+            <div class="form-group">
+                <label>Primary Color</label>
+                <div class="color-field">
+                    <input type="color" class="color-swatch" name="primary_color" value="{{ old('primary_color', $item->primary_color ?: '#3b1f4a') }}" data-testid="ws-primary-color" oninput="this.nextElementSibling.value=this.value">
+                    <input type="text" class="form-control color-hex" value="{{ old('primary_color', $item->primary_color ?: '#3b1f4a') }}" oninput="this.previousElementSibling.value=this.value" data-testid="ws-primary-color-hex">
+                </div>
+                <div class="form-help">Applied as the main brand colour across the website (headers, buttons, footer).</div>
+            </div>
+            <div class="form-group">
+                <label>Accent Color</label>
+                <div class="color-field">
+                    <input type="color" class="color-swatch" name="accent_color" value="{{ old('accent_color', $item->accent_color ?: '#d64a3a') }}" data-testid="ws-accent-color" oninput="this.nextElementSibling.value=this.value">
+                    <input type="text" class="form-control color-hex" value="{{ old('accent_color', $item->accent_color ?: '#d64a3a') }}" oninput="this.previousElementSibling.value=this.value" data-testid="ws-accent-color-hex">
+                </div>
+                <div class="form-help">Used for highlights, links and call-to-action accents.</div>
+            </div>
         </div>
+
         <div class="form-row">
             <div class="form-group">
                 <label>Logo</label>

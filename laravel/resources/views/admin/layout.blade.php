@@ -9,7 +9,41 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=6">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=8">
+    @php
+        $adminWs = \App\Models\WebsiteSetting::first();
+        $aToRgb = function ($hex) {
+            $hex = ltrim((string) $hex, '#');
+            if (strlen($hex) === 3) { $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2]; }
+            if (strlen($hex) !== 6) { return null; }
+            return [hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2))];
+        };
+        $aAdjust = function ($hex, $pct) use ($aToRgb) {
+            $rgb = $aToRgb($hex);
+            if (!$rgb) { return $hex; }
+            $f = fn($c) => max(0, min(255, (int) round($pct < 0 ? $c * (1 + $pct) : $c + (255 - $c) * $pct)));
+            return sprintf('#%02x%02x%02x', $f($rgb[0]), $f($rgb[1]), $f($rgb[2]));
+        };
+        $aPrimary = ($adminWs?->primary_color && $aToRgb($adminWs->primary_color)) ? $adminWs->primary_color : null;
+        $aAccent = ($adminWs?->accent_color && $aToRgb($adminWs->accent_color)) ? $adminWs->accent_color : null;
+    @endphp
+    @if($aPrimary || $aAccent)
+    <style>
+        :root {
+            @if($aPrimary)
+            --a-primary: {{ $aPrimary }};
+            --a-primary-2: {{ $aAdjust($aPrimary, -0.22) }};
+            --a-primary-dark: {{ $aAdjust($aPrimary, -0.4) }};
+            --a-primary-soft: {{ $aAdjust($aPrimary, 0.86) }};
+            @endif
+            @if($aAccent)
+            --a-accent: {{ $aAccent }};
+            --a-accent-soft: {{ $aAdjust($aAccent, 0.82) }};
+            --a-highlight: {{ $aAccent }};
+            @endif
+        }
+    </style>
+    @endif
     {{-- TinyMCE (free self-hosted CDN via jsDelivr for WYSIWYG on .wysiwyg textareas) --}}
     <script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js" referrerpolicy="origin"></script>
     @stack('head')
@@ -46,9 +80,9 @@
                     'Settings' => [
                         ['route' => 'admin.contact-details.edit', 'label' => 'Contact Info', 'icon' => 'fa-phone', 'match' => ['admin/contact-details']],
                         ['route' => 'admin.social-links.index', 'label' => 'Social Links', 'icon' => 'fa-share-nodes', 'match' => ['admin/social-links']],
+                        ['route' => 'admin.videos.index', 'label' => 'Video Links', 'icon' => 'fa-film', 'match' => ['admin/videos']],
                         ['route' => 'admin.seo-settings.index', 'label' => 'SEO Settings', 'icon' => 'fa-magnifying-glass', 'match' => ['admin/seo-settings']],
                         ['route' => 'admin.website-settings.edit', 'label' => 'Website Settings', 'icon' => 'fa-sliders', 'match' => ['admin/website-settings']],
-                        ['route' => 'admin.translations.index', 'label' => 'Translations (EN/HI)', 'icon' => 'fa-language', 'match' => ['admin/translations']],
                     ],
                 ];
             @endphp

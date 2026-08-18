@@ -12,6 +12,7 @@ use App\Models\Offer;
 use App\Models\Faq;
 use App\Models\GalleryItem;
 use App\Models\Event;
+use App\Models\FeaturedVideo;
 
 class HomeController extends Controller
 {
@@ -23,11 +24,13 @@ class HomeController extends Controller
             'services' => Service::where('is_active', true)->orderBy('sort')->take(6)->get(),
             'featuredDoctor' => Doctor::where('is_active', true)->where('is_featured', true)->first(),
             'doctors' => Doctor::where('is_active', true)->where('is_featured', false)->orderBy('sort')->take(4)->get(),
+            'appointmentDoctors' => Doctor::where('is_active', true)->orderBy('sort')->get(['id', 'name']),
             'testimonials' => Testimonial::where('is_active', true)->orderBy('sort')->take(6)->get(),
             'offers' => Offer::where('is_active', true)->latest()->take(3)->get(),
             'events' => Event::where('is_active', true)->orderBy('event_date')->take(3)->get(),
             'gallery' => GalleryItem::where('is_active', true)->orderBy('sort')->take(6)->get(),
             'faqs' => Faq::where('is_active', true)->orderBy('sort')->take(5)->get(),
+            'featuredVideos' => FeaturedVideo::where('is_active', true)->orderBy('sort')->orderBy('id')->get(),
         ]);
     }
 }

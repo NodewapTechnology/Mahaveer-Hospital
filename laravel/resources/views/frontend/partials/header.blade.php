@@ -58,12 +58,6 @@
             </nav>
 
             <div class="header-actions">
-                @if($siteSettings?->language_switch_enabled ?? true)
-                    <div class="lang-toggle" data-testid="lang-toggle">
-                        <a href="{{ route('lang.switch', 'en') }}" class="{{ $currentLang === 'en' ? 'active' : '' }}" data-testid="lang-en">EN</a>
-                        <a href="{{ route('lang.switch', 'hi') }}" class="{{ $currentLang === 'hi' ? 'active' : '' }}" data-testid="lang-hi">हि</a>
-                    </div>
-                @endif
                 @if($siteContact?->phone_primary)
                     <a href="tel:{{ $siteContact->phone_primary }}" class="icon-btn icon-call" title="@t('cta.call') · {{ $siteContact->phone_primary }}" data-testid="header-call-btn" aria-label="@t('cta.call')">
                         <i class="fas fa-phone" aria-hidden="true"></i>

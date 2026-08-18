@@ -42,7 +42,7 @@ class ContactController extends Controller
         if ($isHeroForm) {
             // All required for hero form
             $rules['village'] = 'required|string|max:120';
-            $rules['district'] = 'required|string|max:120';
+            $rules['preferred_doctor'] = 'required|string|max:150';
             $rules['preferred_date'] = 'required|date|after_or_equal:today';
         }
 
