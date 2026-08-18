@@ -83,6 +83,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('website-settings', [WebsiteSettingController::class, 'edit'])->name('website-settings.edit');
         Route::put('website-settings', [WebsiteSettingController::class, 'update'])->name('website-settings.update');
 
+        Route::get('account', [AuthController::class, 'profile'])->name('account.edit');
+        Route::put('account', [AuthController::class, 'updateAccount'])->name('account.update');
+        Route::put('account/password', [AuthController::class, 'updatePassword'])->name('account.password');
+
         Route::get('videos', [FeaturedVideoController::class, 'index'])->name('videos.index');
         Route::get('videos/create', [FeaturedVideoController::class, 'create'])->name('videos.create');
         Route::post('videos', [FeaturedVideoController::class, 'store'])->name('videos.store');

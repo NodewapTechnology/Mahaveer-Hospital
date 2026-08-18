@@ -2169,3 +2169,12 @@ body.modal-open { overflow: hidden; }
 .book-toast.show { transform: translate(-50%, 0); }
 .book-toast i { color: #7dffb0; font-size: 1.1rem; }
 @media (max-width: 1023px) { .book-toast { bottom: 100px; } }
+
+/* v18 — footer mobile 2-column + developed-by credit */
+@media (max-width: 639px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 1.6rem 1.25rem; }
+    .footer-grid > div:first-child { grid-column: 1 / -1; }
+}
+.footer-credit { margin-top: .55rem; font-size: .78rem; color: rgba(255,255,255,.55); }
+.footer-credit a { color: rgba(255,255,255,.8); font-weight: 600; }
+.footer-credit a:hover { color: var(--c-highlight); }

@@ -69,6 +69,7 @@
 
         <div class="footer-bottom">
             <div>{{ $siteSettings?->copyright_text ?? ('© ' . date('Y') . ' ' . ($siteSettings?->site_name ?? 'Mahaveer Hospital') . '. All rights reserved.') }}</div>
+            <div class="footer-credit" data-testid="footer-credit">Developed by <a href="https://nodewap.com" target="_blank" rel="noopener">Nodewap Engineering</a></div>
             <div style="margin-top:.4rem;"><a href="{{ route('admin.login') }}" style="color:rgba(255,255,255,.4);font-size:.78rem;" data-testid="admin-login-link">Admin</a></div>
         </div>
     </div>

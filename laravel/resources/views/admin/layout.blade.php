@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=8">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=9">
     @php
         $adminWs = \App\Models\WebsiteSetting::first();
         $aToRgb = function ($hex) {
@@ -83,6 +83,7 @@
                         ['route' => 'admin.videos.index', 'label' => 'Video Links', 'icon' => 'fa-film', 'match' => ['admin/videos']],
                         ['route' => 'admin.seo-settings.index', 'label' => 'SEO Settings', 'icon' => 'fa-magnifying-glass', 'match' => ['admin/seo-settings']],
                         ['route' => 'admin.website-settings.edit', 'label' => 'Website Settings', 'icon' => 'fa-sliders', 'match' => ['admin/website-settings']],
+                        ['route' => 'admin.account.edit', 'label' => 'My Account', 'icon' => 'fa-user-gear', 'match' => ['admin/account']],
                     ],
                 ];
             @endphp
@@ -109,8 +110,10 @@
                 <a href="{{ url('/') }}" target="_blank" class="btn-adm btn-outline btn-sm"><i class="fas fa-globe"></i> View Site</a>
                 @php $user = auth('admin')->user(); $initial = strtoupper(mb_substr($user?->name ?? 'A', 0, 1)); @endphp
                 <span class="topbar-user">
-                    <span class="avatar">{{ $initial }}</span>
-                    <span>{{ $user?->name }}</span>
+                    <a href="{{ route('admin.account.edit') }}" style="display:flex;align-items:center;gap:.5rem;text-decoration:none;color:inherit;" data-testid="admin-account-link" title="My Account">
+                        <span class="avatar">{{ $initial }}</span>
+                        <span>{{ $user?->name }}</span>
+                    </a>
                 </span>
                 <form method="POST" action="{{ route('admin.logout') }}" style="display:inline;">
                     @csrf

@@ -22,7 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..800,0..100,0..1;1,9..144,300..800,0..100,0..1&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="{{ asset('css/site.css') }}?v=17">
+    <link rel="stylesheet" href="{{ asset('css/site.css') }}?v=18">
     @php
         $mhToRgb = function ($hex) {
             $hex = ltrim((string) $hex, '#');

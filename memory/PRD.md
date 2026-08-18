@@ -110,3 +110,8 @@ New/changed files: FeaturedVideo model + Admin\FeaturedVideoController + admin/v
 - **Glass cards everywhere**: translucent frosted (backdrop-blur) + premium shadow on all card families.
 - **Floating rounded glass mobile header** + rounded pill bottom app-tabbar.
 - **Instagram real thumbnails**: FeaturedVideo::instagramThumb() uses public /p/{code}/media endpoint with server-side + onerror branded glass fallback (no broken images). YouTube uses img.youtube.com thumb.
+
+### v6 (2026-06) — Admin account + footer + sidebar theming (iteration_7 PASS)
+- **Admin My Account** (/admin/account, sidebar 'My Account' + topbar avatar link): change name/email (unique) and change password (verifies current password via Hash::check, min 8 + confirmation, re-login after change). AuthController::profile/updateAccount/updatePassword.
+- **Footer**: 'Developed by Nodewap Engineering' credit after copyright; mobile footer now 2-column (brand spans full width).
+- **Admin sidebar** background now uses --a-primary vars (was hardcoded hex) so it follows the admin-set Primary colour.

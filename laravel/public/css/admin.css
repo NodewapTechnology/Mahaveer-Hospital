@@ -41,9 +41,8 @@ a { color: var(--a-primary); }
 .admin-sidebar {
     width: 268px;
     background:
-        radial-gradient(circle at 15% 20%, rgba(214,74,58,.18), transparent 55%),
-        radial-gradient(circle at 90% 85%, rgba(229,165,48,.10), transparent 60%),
-        linear-gradient(180deg, #1a0d24 0%, #2a1435 60%, #3b1f4a 100%);
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,.06), transparent 55%),
+        linear-gradient(180deg, var(--a-primary-dark) 0%, var(--a-primary-2) 55%, var(--a-primary) 100%);
     color: rgba(255,255,255,0.86);
     padding: 1.5rem 1rem;
     position: fixed;
